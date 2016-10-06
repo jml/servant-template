@@ -42,7 +42,7 @@ warpSettings :: Port -> Settings
 warpSettings port =
   setBeforeMainLoop printPort (setPort port' defaultSettings)
   where
-    printPort = putStrLn $ "hello-prometheus-haskell running at http://localhost:" ++ show port' ++ "/"
+    printPort = putText $ "hello-prometheus-haskell running at http://localhost:" <> show port' <> "/"
     port' = port
 
 
