@@ -1,0 +1,37 @@
+name: hello-prometheus-haskell
+version: 0.1.0
+synopsis: Demonstration of Prometheus instrumentation with Haskell
+description: Please see README.md
+maintainer: Jonathan M. Lange <jml@mumak.net>
+license: Apache
+github: jml/hello-prometheus-haskell
+category: Web
+
+ghc-options: -Wall
+default-extensions:
+  - OverloadedStrings
+
+dependencies:
+  - base >= 4.9 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+    - aeson
+    - servant-server
+    - wai
+    - warp
+
+executables:
+  hello-prometheus-haskell:
+    main: Main.hs
+    source-dirs: app
+    dependencies:
+      - hello-prometheus-haskell
+
+tests:
+  hello-prometheus-haskell-tests:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - hello-prometheus-haskell

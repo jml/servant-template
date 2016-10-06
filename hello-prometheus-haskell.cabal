@@ -1,45 +1,58 @@
+-- This file has been generated from package.yaml by hpack version 0.14.1.
+--
+-- see: https://github.com/sol/hpack
+
 name:                hello-prometheus-haskell
-version:             0.1.0.0
-synopsis:            Initial project template from stack
+version:             0.1.0
+synopsis:            Demonstration of Prometheus instrumentation with Haskell
 description:         Please see README.md
 homepage:            https://github.com/jml/hello-prometheus-haskell#readme
-license:             BSD3
+bug-reports:         https://github.com/jml/hello-prometheus-haskell/issues
+license:             Apache
 license-file:        LICENSE
-author:              Jonathan Lange
-maintainer:          jml@mumak.net
-copyright:           Jonathan M. Lange
-category:            Development
+maintainer:          Jonathan M. Lange <jml@mumak.net>
+category:            Web
 build-type:          Simple
--- extra-source-files:
-cabal-version:       >=1.10
-
-library
-  hs-source-dirs:      src
-  exposed-modules:     Lib
-  build-depends:       base >= 4.7 && < 5
-                     , aeson
-                     , servant-server
-                     , wai
-                     , warp
-  default-language:    Haskell2010
-
-executable hello-prometheus-haskell-exe
-  hs-source-dirs:      app
-  main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
-                     , hello-prometheus-haskell
-  default-language:    Haskell2010
-
-test-suite hello-prometheus-haskell-test
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Spec.hs
-  build-depends:       base
-                     , hello-prometheus-haskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
+cabal-version:       >= 1.10
 
 source-repository head
-  type:     git
+  type: git
   location: https://github.com/jml/hello-prometheus-haskell
+
+library
+  hs-source-dirs:
+      src
+  default-extensions: OverloadedStrings
+  ghc-options: -Wall
+  exposed-modules:
+      Lib
+  build-depends:
+      base >= 4.9 && < 5
+    , aeson
+    , servant-server
+    , wai
+    , warp
+  default-language: Haskell2010
+
+executable hello-prometheus-haskell
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  default-extensions: OverloadedStrings
+  ghc-options: -Wall
+  build-depends:
+      base >= 4.9 && < 5
+    , hello-prometheus-haskell
+  default-language: Haskell2010
+
+test-suite hello-prometheus-haskell-tests
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  default-extensions: OverloadedStrings
+  ghc-options: -Wall
+  build-depends:
+      base >= 4.9 && < 5
+    , hello-prometheus-haskell
+  default-language: Haskell2010
