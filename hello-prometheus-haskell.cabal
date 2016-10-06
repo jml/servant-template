@@ -23,7 +23,7 @@ library
   hs-source-dirs:
       src
   default-extensions: OverloadedStrings
-  ghc-options: -Wall
+  ghc-options: -Wall -Werror
   exposed-modules:
       Lib
   build-depends:
@@ -39,7 +39,7 @@ executable hello-prometheus-haskell
   hs-source-dirs:
       app
   default-extensions: OverloadedStrings
-  ghc-options: -Wall
+  ghc-options: -Wall -Werror
   build-depends:
       base >= 4.9 && < 5
     , hello-prometheus-haskell
@@ -51,7 +51,7 @@ test-suite hello-prometheus-haskell-tests
   hs-source-dirs:
       test
   default-extensions: OverloadedStrings
-  ghc-options: -Wall
+  ghc-options: -Wall -Werror
   build-depends:
       base >= 4.9 && < 5
     , hello-prometheus-haskell

@@ -7,7 +7,7 @@ license: Apache
 github: jml/hello-prometheus-haskell
 category: Web
 
-ghc-options: -Wall
+ghc-options: -Wall -Werror
 default-extensions:
   - OverloadedStrings
 

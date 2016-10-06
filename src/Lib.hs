@@ -1,6 +1,7 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
+
 module Lib
     ( startApp
     ) where
@@ -12,9 +13,9 @@ import Network.Wai.Handler.Warp
 import Servant
 
 data User = User
-  { userId        :: Int
-  , userFirstName :: String
-  , userLastName  :: String
+  { _userId        :: Int
+  , _userFirstName :: String
+  , _userLastName  :: String
   } deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''User)
