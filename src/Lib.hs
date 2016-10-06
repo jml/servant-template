@@ -6,6 +6,8 @@ module Lib
     ( startApp
     ) where
 
+import Protolude
+
 import Data.Aeson
 import Data.Aeson.TH
 import Network.Wai
@@ -14,8 +16,8 @@ import Servant
 
 data User = User
   { _userId        :: Int
-  , _userFirstName :: String
-  , _userLastName  :: String
+  , _userFirstName :: Text
+  , _userLastName  :: Text
   } deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''User)
