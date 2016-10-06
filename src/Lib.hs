@@ -10,7 +10,14 @@ import Protolude
 
 import Data.Aeson (FromJSON, ToJSON)
 import Network.Wai (Application)
-import Network.Wai.Handler.Warp (run)
+import Network.Wai.Handler.Warp
+  ( Port
+  , Settings
+  , defaultSettings
+  , runSettings
+  , setBeforeMainLoop
+  , setPort
+  )
 import Servant ((:>), Get, JSON, Server, serve)
 
 data User = User
@@ -25,7 +32,18 @@ instance ToJSON User
 type API = "users" :> Get '[JSON] [User]
 
 startApp :: IO ()
-startApp = run 8080 app
+startApp = runSettings (warpSettings 8080) app
+
+-- | Generate warp settings from config
+--
+-- Serve from a port and print out where we're serving from.
+warpSettings :: Port -> Settings
+warpSettings port =
+  setBeforeMainLoop printPort (setPort port' defaultSettings)
+  where
+    printPort = putStrLn $ "hello-prometheus-haskell running at http://localhost:" ++ show port' ++ "/"
+    port' = port
+
 
 app :: Application
 app = serve api server
