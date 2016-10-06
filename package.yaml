@@ -37,3 +37,4 @@ tests:
     source-dirs: tests
     dependencies:
       - hello-prometheus-haskell
+      - tasty
