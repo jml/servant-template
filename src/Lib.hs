@@ -1,5 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
 
 module Lib
@@ -8,19 +8,19 @@ module Lib
 
 import Protolude
 
-import Data.Aeson
-import Data.Aeson.TH
-import Network.Wai
-import Network.Wai.Handler.Warp
-import Servant
+import Data.Aeson (FromJSON, ToJSON)
+import Network.Wai (Application)
+import Network.Wai.Handler.Warp (run)
+import Servant ((:>), Get, JSON, Server, serve)
 
 data User = User
   { _userId        :: Int
   , _userFirstName :: Text
   , _userLastName  :: Text
-  } deriving (Eq, Show)
+  } deriving (Eq, Show, Generic)
 
-$(deriveJSON defaultOptions ''User)
+instance FromJSON User
+instance ToJSON User
 
 type API = "users" :> Get '[JSON] [User]
 
