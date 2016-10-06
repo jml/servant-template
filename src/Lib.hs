@@ -24,6 +24,8 @@ import Network.Wai.Handler.Warp
   )
 import qualified Network.Wai.Middleware.RequestLogger as RL
 import qualified Network.Wai.Middleware.Prometheus as Prom
+import qualified Prometheus as Prom
+import qualified Prometheus.Metric.GHC as Prom
 import Servant
   ( (:>)
   , (:<|>)(..)
@@ -84,7 +86,8 @@ startApp :: IO ()
 startApp = runApp 8080 app
 
 runApp :: Port -> Application -> IO ()
-runApp port application =
+runApp port application = do
+  void $ Prom.register Prom.ghcMetrics
   runSettings settings (middleware application)
   where
     settings = warpSettings port

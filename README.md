@@ -2,6 +2,7 @@
 
 Simple example of a web app instrumented with Prometheus metrics.
 
+Run with `+RTS -T` to get GHC metrics (e.g. garbage collection).
 
 ## TODO
 

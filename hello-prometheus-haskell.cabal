@@ -32,6 +32,8 @@ library
     , aeson
     , http-media
     , neat-interpolation
+    , prometheus-client
+    , prometheus-metrics-ghc
     , servant-server
     , wai
     , wai-extra
