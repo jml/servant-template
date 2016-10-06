@@ -30,6 +30,8 @@ library
       base >= 4.9 && < 5
     , protolude
     , aeson
+    , http-media
+    , neat-interpolation
     , servant-server
     , wai
     , wai-extra

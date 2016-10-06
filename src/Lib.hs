@@ -1,5 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DataKinds       #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TypeOperators   #-}
 
 module Lib
@@ -9,6 +11,8 @@ module Lib
 import Protolude
 
 import Data.Aeson (FromJSON, ToJSON)
+import NeatInterpolation (text)
+import Network.HTTP.Media ((//), (/:))
 import Network.Wai (Application)
 import Network.Wai.Handler.Warp
   ( Port
@@ -19,7 +23,17 @@ import Network.Wai.Handler.Warp
   , setPort
   )
 import qualified Network.Wai.Middleware.RequestLogger as RL
-import Servant ((:>), Get, JSON, Server, serve)
+import Servant
+  ( (:>)
+  , (:<|>)(..)
+  , Accept(..)
+  , Get
+  , JSON
+  , MimeRender(..)
+  , Server
+  , serve
+  )
+
 
 data User = User
   { _userId        :: Int
@@ -30,16 +44,39 @@ data User = User
 instance FromJSON User
 instance ToJSON User
 
-type API = "users" :> Get '[JSON] [User]
+data RootPage = RootPage
+
+type API =
+  Get '[HTML] RootPage
+  :<|> "users" :> Get '[JSON] [User]
 
 server :: Server API
-server = return users
+server = pure RootPage :<|> pure users
 
 users :: [User]
 users = [ User 1 "Isaac" "Newton"
         , User 2 "Albert" "Einstein"
         ]
 
+
+data HTML
+
+instance Accept HTML where
+  contentType _ = "text" // "html" /: ("charset", "utf-8")
+
+instance MimeRender HTML RootPage where
+  mimeRender _ _ =
+    toS [text|
+         <!doctype html>
+         <html>
+         <head><title>hello-prometheus-haskell</title></head>
+         <body>
+         <h1>hello-prometheus-haskell</h1>
+         <ul>
+         <li><a href="/users">users</a></li>
+         </body>
+         <html>
+         |]
 
 
 startApp :: IO ()

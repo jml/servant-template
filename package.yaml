@@ -20,6 +20,8 @@ library:
   source-dirs: src
   dependencies:
     - aeson
+    - http-media
+    - neat-interpolation
     - servant-server
     - wai
     - wai-extra
