@@ -38,7 +38,7 @@ library
 executable hello-prometheus-haskell
   main-is: Main.hs
   hs-source-dirs:
-      app
+      cmd
   default-extensions: NoImplicitPrelude OverloadedStrings
   ghc-options: -Wall -Werror
   build-depends:
@@ -51,7 +51,7 @@ test-suite hello-prometheus-haskell-tests
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   hs-source-dirs:
-      test
+      tests
   default-extensions: NoImplicitPrelude OverloadedStrings
   ghc-options: -Wall -Werror
   build-depends:
