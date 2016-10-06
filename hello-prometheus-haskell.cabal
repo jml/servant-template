@@ -25,16 +25,20 @@ library
   default-extensions: NoImplicitPrelude OverloadedStrings
   ghc-options: -Wall -Werror
   exposed-modules:
+      Instrument
       Lib
   build-depends:
       base >= 4.9 && < 5
     , protolude
     , aeson
+    , bytestring
     , http-media
+    , http-types
     , neat-interpolation
     , prometheus-client
     , prometheus-metrics-ghc
     , servant-server
+    , time
     , wai
     , wai-extra
     , wai-middleware-prometheus

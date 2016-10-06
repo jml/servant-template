@@ -23,7 +23,6 @@ import Network.Wai.Handler.Warp
   , setPort
   )
 import qualified Network.Wai.Middleware.RequestLogger as RL
-import qualified Network.Wai.Middleware.Prometheus as Prom
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
 import Servant
@@ -33,10 +32,12 @@ import Servant
   , Get
   , JSON
   , MimeRender(..)
+  , Raw
   , Server
   , serve
   )
 
+import Instrument (instrumentApp, metrics, requestDuration)
 
 data User = User
   { _userId        :: Int
@@ -52,9 +53,10 @@ data RootPage = RootPage
 type API =
   Get '[HTML] RootPage
   :<|> "users" :> Get '[JSON] [User]
+  :<|> "metrics" :> Raw
 
 server :: Server API
-server = pure RootPage :<|> pure users
+server = pure RootPage :<|> pure users :<|> metrics
 
 users :: [User]
 users = [ User 1 "Isaac" "Newton"
@@ -77,6 +79,7 @@ instance MimeRender HTML RootPage where
          <h1>hello-prometheus-haskell</h1>
          <ul>
          <li><a href="/users">users</a></li>
+         <li><a href="/metrics"><code>/metrics</code></a></li>
          </body>
          <html>
          |]
@@ -87,11 +90,12 @@ startApp = runApp 8080 app
 
 runApp :: Port -> Application -> IO ()
 runApp port application = do
+  requests <- Prom.registerIO requestDuration
   void $ Prom.register Prom.ghcMetrics
-  runSettings settings (middleware application)
+  runSettings settings (middleware requests application)
   where
     settings = warpSettings port
-    middleware = RL.logStdoutDev . Prom.prometheus Prom.def
+    middleware r = RL.logStdoutDev . instrumentApp r "hello_world"
 
 -- | Generate warp settings from config
 --

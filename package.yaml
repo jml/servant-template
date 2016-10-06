@@ -20,11 +20,14 @@ library:
   source-dirs: src
   dependencies:
     - aeson
+    - bytestring
     - http-media
+    - http-types
     - neat-interpolation
     - prometheus-client
     - prometheus-metrics-ghc
     - servant-server
+    - time
     - wai
     - wai-extra
     - wai-middleware-prometheus
