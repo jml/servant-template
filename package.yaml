@@ -22,6 +22,7 @@ library:
     - aeson
     - servant-server
     - wai
+    - wai-extra
     - warp
 
 executables:

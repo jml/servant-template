@@ -18,6 +18,7 @@ import Network.Wai.Handler.Warp
   , setBeforeMainLoop
   , setPort
   )
+import qualified Network.Wai.Middleware.RequestLogger as RL
 import Servant ((:>), Get, JSON, Server, serve)
 
 data User = User
@@ -32,7 +33,7 @@ instance ToJSON User
 type API = "users" :> Get '[JSON] [User]
 
 startApp :: IO ()
-startApp = runSettings (warpSettings 8080) app
+startApp = runSettings (warpSettings 8080) (RL.logStdoutDev app)
 
 -- | Generate warp settings from config
 --

@@ -32,6 +32,7 @@ library
     , aeson
     , servant-server
     , wai
+    , wai-extra
     , warp
   default-language: Haskell2010
 
