@@ -23,6 +23,7 @@ import Network.Wai.Handler.Warp
   , setPort
   )
 import qualified Network.Wai.Middleware.RequestLogger as RL
+import qualified Network.Wai.Middleware.Prometheus as Prom
 import Servant
   ( (:>)
   , (:<|>)(..)
@@ -80,7 +81,14 @@ instance MimeRender HTML RootPage where
 
 
 startApp :: IO ()
-startApp = runSettings (warpSettings 8080) (RL.logStdoutDev app)
+startApp = runApp 8080 app
+
+runApp :: Port -> Application -> IO ()
+runApp port application =
+  runSettings settings (middleware application)
+  where
+    settings = warpSettings port
+    middleware = RL.logStdoutDev . Prom.prometheus Prom.def
 
 -- | Generate warp settings from config
 --

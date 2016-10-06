@@ -35,6 +35,7 @@ library
     , servant-server
     , wai
     , wai-extra
+    , wai-middleware-prometheus
     , warp
   default-language: Haskell2010
 

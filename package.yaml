@@ -25,6 +25,7 @@ library:
     - servant-server
     - wai
     - wai-extra
+    - wai-middleware-prometheus
     - warp
 
 executables:
