@@ -32,6 +32,16 @@ instance ToJSON User
 
 type API = "users" :> Get '[JSON] [User]
 
+server :: Server API
+server = return users
+
+users :: [User]
+users = [ User 1 "Isaac" "Newton"
+        , User 2 "Albert" "Einstein"
+        ]
+
+
+
 startApp :: IO ()
 startApp = runSettings (warpSettings 8080) (RL.logStdoutDev app)
 
@@ -52,10 +62,3 @@ app = serve api server
 api :: Proxy API
 api = Proxy
 
-server :: Server API
-server = return users
-
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
