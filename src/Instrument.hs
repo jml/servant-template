@@ -30,15 +30,20 @@ instrumentApp :: RequestDuration  -- ^ The metric to instrument
               -> Text             -- ^ The label used to identify this app
               -> Wai.Application  -- ^ The app to instrument
               -> Wai.Application  -- ^ The instrumented app
-instrumentApp duration handler app req respond = do
+instrumentApp metric handler app req respond = do
     start <- getCurrentTime
-    app req $ \res -> do
+    app req (\res -> do
+        recordResult start (HTTP.statusCode (Wai.responseStatus res))
+        respond res) `onException` recordResult start (500 :: Integer)
+
+    where
+      recordResult start statusCode = do
         end <- getCurrentTime
         let latency = fromRational $ toRational (end `diffUTCTime` start)
-        let method = toS (Wai.requestMethod req)
-        let status = show (HTTP.statusCode (Wai.responseStatus res))
-        Prom.withLabel (toS handler, method, status) (Prom.observe latency) duration
-        respond res
+        Prom.withLabel (toS handler, method, status) (Prom.observe latency) metric
+        where
+          method = toS (Wai.requestMethod req)
+          status = show statusCode
 
 metrics :: Wai.Application
 metrics = const respondWithMetrics

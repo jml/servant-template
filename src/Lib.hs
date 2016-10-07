@@ -8,7 +8,7 @@ module Lib
     ( startApp
     ) where
 
-import Protolude
+import Protolude hiding (Handler)
 
 import Data.Aeson (FromJSON, ToJSON)
 import NeatInterpolation (text)
@@ -32,10 +32,12 @@ import Servant
   , Get
   , JSON
   , MimeRender(..)
+  , Handler
   , Raw
   , Server
   , serve
   )
+import System.Random (randomIO)
 
 import Instrument (instrumentApp, metrics, requestDuration)
 
@@ -56,12 +58,18 @@ type API =
   :<|> "metrics" :> Raw
 
 server :: Server API
-server = pure RootPage :<|> pure users :<|> metrics
+server = pure RootPage :<|> users :<|> metrics
 
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
+users :: Handler [User]
+users = liftIO $ simulateNormalCode [ User 1 "Isaac" "Newton"
+                                    , User 2 "Albert" "Einstein"
+                                    ]
+  where
+    simulateNormalCode x = do
+      r <- randomIO :: IO Double
+      if r < 0.05
+        then panic "Credit expired. Insert coin to proceed."
+        else pure x
 
 
 data HTML

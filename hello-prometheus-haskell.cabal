@@ -1,4 +1,4 @@
--- This file has been generated from package.yaml by hpack version 0.14.1.
+-- This file has been generated from package.yaml by hpack version 0.14.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -37,6 +37,7 @@ library
     , neat-interpolation
     , prometheus-client
     , prometheus-metrics-ghc
+    , random
     , servant-server
     , time
     , wai
