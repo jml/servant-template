@@ -80,6 +80,10 @@ instance MimeRender HTML RootPage where
          <ul>
          <li><a href="/users">users</a></li>
          <li><a href="/metrics"><code>/metrics</code></a></li>
+         </ul>
+         <p>
+         Source code at <a href="https://github.com/jml/hello-world-haskell">https://github.com/jml/hello-world-haskell</a>
+         </p>
          </body>
          <html>
          |]
