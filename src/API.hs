@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -19,7 +20,6 @@ import Servant
   , Get
   , JSON
   , MimeRender(..)
-  , Handler
   , Raw
   , Server
   )
@@ -48,7 +48,7 @@ type API =
 server :: Server API
 server = pure RootPage :<|> users :<|> metrics
 
-users :: Handler [User]
+users :: MonadIO m => m [User]
 users = liftIO $ simulateNormalCode [ User 1 "Isaac" "Newton"
                                     , User 2 "Albert" "Einstein"
                                     ]
