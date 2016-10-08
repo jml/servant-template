@@ -53,7 +53,8 @@ import API (API, server)
 import Instrument (instrumentApp, requestDuration)
 
 -- | Configuration for the application.
-data Config = Config { port :: Port } deriving Show
+data Config
+  = Config { port :: Port } deriving Show
 
 
 startApp :: IO ()
