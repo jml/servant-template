@@ -30,6 +30,20 @@ import Network.Wai.Handler.Warp
   , setPort
   )
 import qualified Network.Wai.Middleware.RequestLogger as RL
+import Options.Applicative
+  ( ParserInfo
+  , auto
+  , execParser
+  , fullDesc
+  , header
+  , help
+  , helper
+  , info
+  , long
+  , metavar
+  , option
+  , progDesc
+  )
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
@@ -43,7 +57,22 @@ data Config = Config { port :: Port } deriving Show
 
 
 startApp :: IO ()
-startApp = runApp Config { port = 8080 }
+startApp = runApp =<< execParser options
+
+options :: ParserInfo Config
+options =
+  info (helper <*> parser) description
+  where
+    parser =
+      Config
+      <$> option auto
+          (fold [ long "port", metavar "PORT", help "Port to listen on" ])
+
+    description = fold
+      [ fullDesc
+      , progDesc "Simple web API server"
+      , header "hello-prometheus-haskell - Demo of Prometheus with Haskell"
+      ]
 
 runApp :: Config -> IO ()
 runApp config = do

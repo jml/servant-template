@@ -38,6 +38,7 @@ library
     , http-types
     , logging-effect
     , neat-interpolation
+    , optparse-applicative
     , prometheus-client
     , prometheus-metrics-ghc
     , random
