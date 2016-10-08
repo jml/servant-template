@@ -1,8 +1,4 @@
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE TypeOperators   #-}
 
 module Lib
     ( startApp
@@ -10,9 +6,6 @@ module Lib
 
 import Protolude hiding (Handler)
 
-import Data.Aeson (FromJSON, ToJSON)
-import NeatInterpolation (text)
-import Network.HTTP.Media ((//), (/:))
 import Network.Wai (Application)
 import Network.Wai.Handler.Warp
   ( Port
@@ -25,76 +18,10 @@ import Network.Wai.Handler.Warp
 import qualified Network.Wai.Middleware.RequestLogger as RL
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
-import Servant
-  ( (:>)
-  , (:<|>)(..)
-  , Accept(..)
-  , Get
-  , JSON
-  , MimeRender(..)
-  , Handler
-  , Raw
-  , Server
-  , serve
-  )
-import System.Random (randomIO)
+import Servant (serve)
 
-import Instrument (instrumentApp, metrics, requestDuration)
-
-data User = User
-  { _userId        :: Int
-  , _userFirstName :: Text
-  , _userLastName  :: Text
-  } deriving (Eq, Show, Generic)
-
-instance FromJSON User
-instance ToJSON User
-
-data RootPage = RootPage
-
-type API =
-  Get '[HTML] RootPage
-  :<|> "users" :> Get '[JSON] [User]
-  :<|> "metrics" :> Raw
-
-server :: Server API
-server = pure RootPage :<|> users :<|> metrics
-
-users :: Handler [User]
-users = liftIO $ simulateNormalCode [ User 1 "Isaac" "Newton"
-                                    , User 2 "Albert" "Einstein"
-                                    ]
-  where
-    simulateNormalCode x = do
-      r <- randomIO :: IO Double
-      if r < 0.05
-        then panic "Credit expired. Insert coin to proceed."
-        else pure x
-
-
-data HTML
-
-instance Accept HTML where
-  contentType _ = "text" // "html" /: ("charset", "utf-8")
-
-instance MimeRender HTML RootPage where
-  mimeRender _ _ =
-    toS [text|
-         <!doctype html>
-         <html>
-         <head><title>hello-prometheus-haskell</title></head>
-         <body>
-         <h1>hello-prometheus-haskell</h1>
-         <ul>
-         <li><a href="/users">users</a></li>
-         <li><a href="/metrics"><code>/metrics</code></a></li>
-         </ul>
-         <p>
-         Source code at <a href="https://github.com/jml/hello-world-haskell">https://github.com/jml/hello-world-haskell</a>
-         </p>
-         </body>
-         <html>
-         |]
+import API (API, server)
+import Instrument (instrumentApp, requestDuration)
 
 
 startApp :: IO ()
@@ -119,10 +46,6 @@ warpSettings port =
     printPort = putText $ "hello-prometheus-haskell running at http://localhost:" <> show port' <> "/"
     port' = port
 
-
 app :: Application
-app = serve api server
-
-api :: Proxy API
-api = Proxy
+app = serve (Proxy :: Proxy API) server
 

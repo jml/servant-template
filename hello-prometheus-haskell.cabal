@@ -25,6 +25,8 @@ library
   default-extensions: NoImplicitPrelude OverloadedStrings
   ghc-options: -Wall -Werror
   exposed-modules:
+      API
+      ContentTypes
       Instrument
       Lib
   build-depends:
