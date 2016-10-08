@@ -23,6 +23,7 @@ library:
     - bytestring
     - http-media
     - http-types
+    - logging-effect
     - neat-interpolation
     - prometheus-client
     - prometheus-metrics-ghc
@@ -33,6 +34,7 @@ library:
     - wai-extra
     - wai-middleware-prometheus
     - warp
+    - wl-pprint-text
 
 executables:
   hello-prometheus-haskell:

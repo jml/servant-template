@@ -6,6 +6,7 @@ module Lib
 
 import Protolude hiding (Handler)
 
+import Control.Monad.Log (WithSeverity(..), Severity(..), logMessage, renderWithSeverity, runLoggingT)
 import Network.Wai (Application)
 import Network.Wai.Handler.Warp
   ( Port
@@ -19,6 +20,7 @@ import qualified Network.Wai.Middleware.RequestLogger as RL
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
+import Text.PrettyPrint.Leijen.Text (text)
 
 import API (API, server)
 import Instrument (instrumentApp, requestDuration)
@@ -41,10 +43,9 @@ runApp port application = do
 -- Serve from a port and print out where we're serving from.
 warpSettings :: Port -> Settings
 warpSettings port =
-  setBeforeMainLoop printPort (setPort port' defaultSettings)
+  setBeforeMainLoop printPort (setPort port defaultSettings)
   where
-    printPort = putText $ "hello-prometheus-haskell running at http://localhost:" <> show port' <> "/"
-    port' = port
+    printPort = runLoggingT (logMessage (WithSeverity Informational ("Listening on :" <> show port))) (print . renderWithSeverity text)
 
 app :: Application
 app = serve (Proxy :: Proxy API) server
