@@ -33,6 +33,7 @@ import qualified Network.Wai.Middleware.RequestLogger as RL
 import Options.Applicative
   ( ParserInfo
   , auto
+  , eitherReader
   , execParser
   , fullDesc
   , header
@@ -43,6 +44,7 @@ import Options.Applicative
   , metavar
   , option
   , progDesc
+  , value
   )
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
@@ -54,8 +56,12 @@ import Instrument (instrumentApp, requestDuration)
 
 -- | Configuration for the application.
 data Config
-  = Config { port :: Port } deriving Show
+  = Config { port :: Port
+           , accessLogs :: AccessLogs
+           } deriving Show
 
+data AccessLogs
+  = Disabled | Enabled | DevMode deriving (Eq, Show)
 
 startApp :: IO ()
 startApp = runApp =<< execParser options
@@ -68,6 +74,13 @@ options =
       Config
       <$> option auto
           (fold [ long "port", metavar "PORT", help "Port to listen on" ])
+      <*> option (eitherReader parseAccessLogs)
+          (fold [ long "access-logs", help "How to log HTTP access", value Disabled ])
+
+    parseAccessLogs "none" = pure Disabled
+    parseAccessLogs "basic" = pure Enabled
+    parseAccessLogs "dev" = pure DevMode
+    parseAccessLogs _ = throwError "One of 'none', 'basic', or 'dev'"
 
     description = fold
       [ fullDesc
@@ -76,13 +89,17 @@ options =
       ]
 
 runApp :: Config -> IO ()
-runApp config = do
+runApp config@Config{..} = do
   requests <- Prom.registerIO requestDuration
   void $ Prom.register Prom.ghcMetrics
   runSettings settings (middleware requests)
   where
     settings = warpSettings config
-    middleware r = RL.logStdoutDev . instrumentApp r "hello_world" $ app
+    middleware r = logging . instrumentApp r "hello_world" $ app
+    logging = case accessLogs of
+                Disabled -> identity
+                Enabled -> RL.logStdout
+                DevMode -> RL.logStdoutDev
     app = serve (Proxy :: Proxy API) server
 
 -- | Generate warp settings from config

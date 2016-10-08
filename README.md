@@ -15,7 +15,6 @@ Run with `+RTS -T` to get GHC metrics (e.g. garbage collection).
 - [ ] Actually make it a template project (using cookiecutter?)
 - [ ] Log statement in handler
 - [ ] Manual metrics increment in handler
-- [ ] Configure whether access logging enabled, and whether its dev version
 - [ ] hindent everything
 - [ ] circle CI
 - [ ] docker image make target
