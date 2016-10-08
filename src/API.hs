@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
@@ -12,8 +13,13 @@ module API
 
 import Protolude hiding (Handler)
 
+import Control.Monad.Log
+  ( MonadLog
+  , Severity(..)
+  , WithSeverity
+  )
 import Data.Aeson (FromJSON, ToJSON)
-import NeatInterpolation (text)
+import qualified NeatInterpolation as NI
 import Servant
   ( (:>)
   , (:<|>)(..)
@@ -27,6 +33,7 @@ import System.Random (randomIO)
 
 import ContentTypes (HTML)
 import Instrument (metrics)
+import qualified Logging as Log
 
 
 data User = User
@@ -46,23 +53,25 @@ type API =
   :<|> "metrics" :> Raw
 
 server :: Server API
-server = pure RootPage :<|> users :<|> metrics
+server = pure RootPage :<|> Log.withLogging users :<|> metrics
 
-users :: MonadIO m => m [User]
-users = liftIO $ simulateNormalCode [ User 1 "Isaac" "Newton"
-                                    , User 2 "Albert" "Einstein"
-                                    ]
+users :: (MonadIO m, MonadLog (WithSeverity LText) m) => m [User]
+users = simulateNormalCode [ User 1 "Isaac" "Newton"
+                           , User 2 "Albert" "Einstein"
+                           ]
   where
     simulateNormalCode x = do
-      r <- randomIO :: IO Double
-      if r < 0.05
-        then panic "Credit expired. Insert coin to proceed."
+      r <- liftIO randomIO
+      if r < (0.05 :: Double)
+        then do
+          Log.log Error ("Need more money" :: LText)
+          panic "Credit expired. Insert coin to proceed."
         else pure x
 
 
 instance MimeRender HTML RootPage where
   mimeRender _ _ =
-    toS [text|
+    toS [NI.text|
          <!doctype html>
          <html>
          <head><title>hello-prometheus-haskell</title></head>

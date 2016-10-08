@@ -5,22 +5,8 @@ module Lib
     ( startApp
     ) where
 
-import Protolude hiding (Handler)
+import Protolude
 
-import Control.Monad.Log
-  ( LoggingT
-  , MonadLog
-  , WithTimestamp
-  , WithSeverity(..)
-  , Severity(..)
-  , logMessage
-  , mapLogMessageM
-  , renderWithSeverity
-  , renderWithTimestamp
-  , runLoggingT
-  , timestamp
-  )
-import Data.Time.Format (defaultTimeLocale, formatTime, iso8601DateFormat)
 import Network.Wai.Handler.Warp
   ( Port
   , Settings
@@ -49,10 +35,11 @@ import Options.Applicative
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
-import Text.PrettyPrint.Leijen.Text (text)
+import Text.PrettyPrint.Leijen.Text (int, text)
 
 import API (API, server)
 import Instrument (instrumentApp, requestDuration)
+import qualified Logging as Log
 
 -- | Configuration for the application.
 data Config
@@ -107,13 +94,6 @@ runApp config@Config{..} = do
 -- Serve from a port and print out where we're serving from.
 warpSettings :: Config -> Settings
 warpSettings Config{..} =
-  setBeforeMainLoop (withLogging printPort) (setPort port defaultSettings)
+  setBeforeMainLoop (Log.withLogging printPort) (setPort port defaultSettings)
   where
-    printPort :: MonadLog (WithSeverity LText) m => m ()
-    printPort = logMessage (WithSeverity Informational ("Listening on :" <> show port))
-
-withLogging :: MonadIO m => LoggingT (WithSeverity LText) (LoggingT (WithTimestamp (WithSeverity LText)) m) a -> m a
-withLogging body = runLoggingT (mapLogMessageM timestamp body) printLogs
-  where
-    printLogs = print . renderWithTimestamp (formatTime defaultTimeLocale timeFormat) (renderWithSeverity text)
-    timeFormat = iso8601DateFormat (Just "%H:%M:%S.%q")
+    printPort = Log.info (text "Listening on :" `mappend` int port)

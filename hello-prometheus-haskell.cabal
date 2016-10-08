@@ -29,6 +29,7 @@ library
       ContentTypes
       Instrument
       Lib
+      Logging
   build-depends:
       base >= 4.9 && < 5
     , protolude
