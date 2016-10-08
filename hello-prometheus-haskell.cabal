@@ -22,7 +22,7 @@ source-repository head
 library
   hs-source-dirs:
       src
-  default-extensions: NoImplicitPrelude OverloadedStrings
+  default-extensions: NoImplicitPrelude OverloadedStrings RecordWildCards
   ghc-options: -Wall -Werror
   exposed-modules:
       API
@@ -54,7 +54,7 @@ executable hello-prometheus-haskell
   main-is: Main.hs
   hs-source-dirs:
       cmd
-  default-extensions: NoImplicitPrelude OverloadedStrings
+  default-extensions: NoImplicitPrelude OverloadedStrings RecordWildCards
   ghc-options: -Wall -Werror
   build-depends:
       base >= 4.9 && < 5
@@ -67,7 +67,7 @@ test-suite hello-prometheus-haskell-tests
   main-is: Spec.hs
   hs-source-dirs:
       tests
-  default-extensions: NoImplicitPrelude OverloadedStrings
+  default-extensions: NoImplicitPrelude OverloadedStrings RecordWildCards
   ghc-options: -Wall -Werror
   build-depends:
       base >= 4.9 && < 5

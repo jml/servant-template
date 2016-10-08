@@ -21,7 +21,6 @@ import Control.Monad.Log
   , timestamp
   )
 import Data.Time.Format (defaultTimeLocale, formatTime, iso8601DateFormat)
-import Network.Wai (Application)
 import Network.Wai.Handler.Warp
   ( Port
   , Settings
@@ -39,24 +38,28 @@ import Text.PrettyPrint.Leijen.Text (text)
 import API (API, server)
 import Instrument (instrumentApp, requestDuration)
 
+-- | Configuration for the application.
+data Config = Config { port :: Port } deriving Show
+
 
 startApp :: IO ()
-startApp = runApp 8080 app
+startApp = runApp Config { port = 8080 }
 
-runApp :: Port -> Application -> IO ()
-runApp port application = do
+runApp :: Config -> IO ()
+runApp config = do
   requests <- Prom.registerIO requestDuration
   void $ Prom.register Prom.ghcMetrics
-  runSettings settings (middleware requests application)
+  runSettings settings (middleware requests)
   where
-    settings = warpSettings port
-    middleware r = RL.logStdoutDev . instrumentApp r "hello_world"
+    settings = warpSettings config
+    middleware r = RL.logStdoutDev . instrumentApp r "hello_world" $ app
+    app = serve (Proxy :: Proxy API) server
 
 -- | Generate warp settings from config
 --
 -- Serve from a port and print out where we're serving from.
-warpSettings :: Port -> Settings
-warpSettings port =
+warpSettings :: Config -> Settings
+warpSettings Config{..} =
   setBeforeMainLoop (withLogging printPort) (setPort port defaultSettings)
   where
     printPort :: MonadLog (WithSeverity LText) m => m ()
@@ -67,6 +70,3 @@ withLogging body = runLoggingT (mapLogMessageM timestamp body) printLogs
   where
     printLogs = print . renderWithTimestamp (formatTime defaultTimeLocale timeFormat) (renderWithSeverity text)
     timeFormat = iso8601DateFormat (Just "%H:%M:%S.%q")
-
-app :: Application
-app = serve (Proxy :: Proxy API) server
