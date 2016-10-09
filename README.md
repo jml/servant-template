@@ -1,17 +1,16 @@
-# {{ cookiecutter.project_name }}
+# servant-template
 
-{{cookiecutter.synopsis}}
+A [cookiecutter]({{ cookiecutter.project_name }}) template for
+(almost) production-ready Servant servers.
 
-## About this template
-
-This is a template for making HTTP APIs with Servant that starts off by being very close to production ready.
-
-To use it:
+## Usage
 
 ```
 $ pip install --user cookiecutter
 $ cookiecutter gh:jml/servant-template
 ```
+
+## Features
 
 Things you get with this template:
 
