@@ -4,7 +4,7 @@ module Main
 
 import Protolude
 
-import Lib (startApp)
+import {{ cookiecutter.module_name }}.Lib (startApp)
 
 main :: IO ()
 main = startApp

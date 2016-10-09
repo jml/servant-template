@@ -6,7 +6,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TypeOperators #-}
 
-module API
+module {{ cookiecutter.module_name}}.API
   ( API
   , server
   ) where
@@ -20,9 +20,9 @@ import Servant
        ((:>), (:<|>)(..), Get, JSON, MimeRender(..), Raw, Server)
 import System.Random (randomIO)
 
-import ContentTypes (HTML)
-import Instrument (metrics)
-import qualified Logging as Log
+import {{ cookiecutter.module_name }}.ContentTypes (HTML)
+import {{ cookiecutter.module_name }}.Instrument (metrics)
+import qualified {{ cookiecutter.module_name }}.Logging as Log
 
 data User = User
   { _userId :: Int

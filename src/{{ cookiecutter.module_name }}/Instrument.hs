@@ -1,4 +1,4 @@
-module Instrument
+module {{ cookiecutter.module_name }}.Instrument
   ( metrics
   , requestDuration
   , instrumentApp

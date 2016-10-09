@@ -44,11 +44,9 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
   - [ ] Run & enforce hindent
   - [ ] Run & enforce hlint
   - [ ] Make a Docker image
-- [ ] Embrace optparse-applicative's completion
 
 ### Code improvements
 
-- [ ] Put everything in a top-level module
 - [ ] Add a basic test suite
   - [ ] servant-aeson-hspec
   - [ ] servant-quickcheck
@@ -56,3 +54,4 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
 - [ ] Switch to [prometheus](https://hackage.haskell.org/package/prometheus)
   library if it ever gets `Vector` support:
   https://github.com/LukeHoersten/prometheus/issues/1
+- [ ] Embrace optparse-applicative's completion

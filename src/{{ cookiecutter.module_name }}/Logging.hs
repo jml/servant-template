@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module Logging
+module {{ cookiecutter.module_name }}.Logging
   ( withLogging
   , log
   , info

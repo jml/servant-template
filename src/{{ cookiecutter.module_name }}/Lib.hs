@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 
-module Lib
+module {{ cookiecutter.module_name }}.Lib
   ( startApp
   ) where
 
@@ -19,9 +19,9 @@ import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
 import Text.PrettyPrint.Leijen.Text (int, text)
 
-import API (API, server)
-import Instrument (instrumentApp, requestDuration)
-import qualified Logging as Log
+import {{ cookiecutter.module_name }}.API (API, server)
+import {{ cookiecutter.module_name }}.Instrument (instrumentApp, requestDuration)
+import qualified {{ cookiecutter.module_name }}.Logging as Log
 
 -- | Configuration for the application.
 data Config = Config

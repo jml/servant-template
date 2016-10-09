@@ -1,4 +1,4 @@
-module ContentTypes
+module {{ cookiecutter.module_name }}.ContentTypes
   ( HTML
   ) where
 
