@@ -18,7 +18,7 @@ Things you get with this template:
 * Prometheus instrumentation using [prometheus-client](https://hackage.haskell.org/package/prometheus-client)
 * command-line parsing with [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
 
-It makes a couple of opinionated decisions:
+It makes a few opinionated decisions:
 
 * GHC 8.0 only
 * Built with Stack
@@ -27,6 +27,7 @@ It makes a couple of opinionated decisions:
 * The root page of the service has a simple HTML page intended for use by developers
 * The hackage name is the repo name is the project name
 * Uses CircleCI as its default CI tool
+* Enforces hindent-formatted code in CI
 
 Many of these opinions are lightly held. If this template would be more useful to you with some of them changed, please [file an issue](https://github.com/jml/servant-template/issues/new) or submit a PR.
 
@@ -39,10 +40,7 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
 ### Management
 
 - [ ] More Haddock documentation
-- [ ] Makefile
-  - [ ] Run & enforce hindent
-  - [ ] Run & enforce hlint
-  - [ ] Make a Docker image
+- [ ] Make a Docker image
 - [ ] Remove custom logging-effect dependency once new features have been released
 
 ### Code improvements
