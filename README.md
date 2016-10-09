@@ -13,9 +13,7 @@ Run with `+RTS -T` to get GHC metrics (e.g. garbage collection).
 ## Template project TODO
 
 - [ ] Actually make it a template project (using cookiecutter?)
-- [ ] Log statement in handler
 - [ ] Manual metrics increment in handler
-- [ ] hindent everything
 - [ ] circle CI
 - [ ] docker image make target
 - [ ] Internal haddock documentation
@@ -28,3 +26,4 @@ Run with `+RTS -T` to get GHC metrics (e.g. garbage collection).
 
 - too many decimals in time format output
 - name of app being instrumented
+- use optparse-applicative to get completion

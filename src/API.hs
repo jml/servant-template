@@ -4,7 +4,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE TypeOperators #-}
 
 module API
   ( API
@@ -13,52 +13,39 @@ module API
 
 import Protolude hiding (Handler)
 
-import Control.Monad.Log
-  ( MonadLog
-  , Severity(..)
-  , WithSeverity
-  )
+import Control.Monad.Log (MonadLog, Severity(..), WithSeverity)
 import Data.Aeson (FromJSON, ToJSON)
 import qualified NeatInterpolation as NI
 import Servant
-  ( (:>)
-  , (:<|>)(..)
-  , Get
-  , JSON
-  , MimeRender(..)
-  , Raw
-  , Server
-  )
+       ((:>), (:<|>)(..), Get, JSON, MimeRender(..), Raw, Server)
 import System.Random (randomIO)
 
 import ContentTypes (HTML)
 import Instrument (metrics)
 import qualified Logging as Log
 
-
 data User = User
-  { _userId        :: Int
+  { _userId :: Int
   , _userFirstName :: Text
-  , _userLastName  :: Text
+  , _userLastName :: Text
   } deriving (Eq, Show, Generic)
 
 instance FromJSON User
+
 instance ToJSON User
 
-data RootPage = RootPage
+data RootPage =
+  RootPage
 
-type API =
-  Get '[HTML] RootPage
-  :<|> "users" :> Get '[JSON] [User]
-  :<|> "metrics" :> Raw
+type API = Get '[HTML] RootPage :<|> "users" :> Get '[JSON] [User] :<|> "metrics" :> Raw
 
 server :: Server API
 server = pure RootPage :<|> Log.withLogging users :<|> metrics
 
-users :: (MonadIO m, MonadLog (WithSeverity LText) m) => m [User]
-users = simulateNormalCode [ User 1 "Isaac" "Newton"
-                           , User 2 "Albert" "Einstein"
-                           ]
+users
+  :: (MonadIO m, MonadLog (WithSeverity LText) m)
+  => m [User]
+users = simulateNormalCode [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
   where
     simulateNormalCode x = do
       r <- liftIO randomIO
@@ -68,10 +55,10 @@ users = simulateNormalCode [ User 1 "Isaac" "Newton"
           panic "Credit expired. Insert coin to proceed."
         else pure x
 
-
 instance MimeRender HTML RootPage where
   mimeRender _ _ =
-    toS [NI.text|
+    toS
+      [NI.text|
          <!doctype html>
          <html>
          <head><title>hello-prometheus-haskell</title></head>
