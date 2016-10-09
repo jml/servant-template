@@ -1,11 +1,11 @@
-name: hello-prometheus-haskell
+name: {{ cookiecutter.project_name }}
 version: 0.1.0
-synopsis: Demonstration of Prometheus instrumentation with Haskell
+synopsis: {{ cookiecutter.synopsis }}
 description: Please see README.md
-maintainer: Jonathan M. Lange <jml@mumak.net>
+maintainer: {{ cookiecutter.maintainer }}
 license: Apache
-github: jml/hello-prometheus-haskell
-category: Web
+github: {{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}
+category: {{ cookiecutter.category }}
 
 ghc-options: -Wall -Werror
 default-extensions:
@@ -39,16 +39,16 @@ library:
     - wl-pprint-text
 
 executables:
-  hello-prometheus-haskell:
+  {{ cookiecutter.project_name }}:
     main: Main.hs
     source-dirs: cmd
     dependencies:
-      - hello-prometheus-haskell
+      - {{ cookiecutter.project_name }}
 
 tests:
-  hello-prometheus-haskell-tests:
+  {{ cookiecutter.project_name }}-tests:
     main: Spec.hs
     source-dirs: tests
     dependencies:
-      - hello-prometheus-haskell
+      - {{ cookiecutter.project_name }}
       - tasty

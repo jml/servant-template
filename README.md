@@ -1,30 +1,57 @@
-# hello-prometheus-haskell
+# {{ cookiecutter.project_name }}
 
-Simple example of a web app instrumented with Prometheus metrics.
+{{cookiecutter.synopsis}}
 
-Run with `+RTS -T` to get GHC metrics (e.g. garbage collection).
+## About this template
+
+This is a template for making HTTP APIs with Servant that starts off by being
+very close to production ready.
+
+Specifically:
+
+* logging by
+  using [logging-effect](http://hackage.haskell.org/package/logging-effect)
+* Prometheus instrumentation
+  using
+  [prometheus-client](https://hackage.haskell.org/package/prometheus-client)
+* command-line parsing
+  with
+  [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
+
+It makes a couple of opinionated decisions:
+
+* GHC 8.0 only
+* Built with Stack
+* Uses `package.yaml`
+  (from [hpack](https://hackage.haskell.org/package/hpack)) to configure
+  dependencies etc.
+* [Protolude](https://github.com/sdiehl/protolude) as the Prelude
+
+Note that the Cabal file is not checked in to this cookiecutter template. 
+
+Uses
+[Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md),
+enforced by [hindent](https://github.com/chrisdone/hindent)
 
 ## TODO
 
-- wai-middleware-prometheus
-  - uses summaries for instrumenting queries, which are not aggregatable
-- example of custom prometheus metric
+### Management
 
-## Template project TODO
+- [ ] More Haddock documentation
+- [ ] Add CircleCI / Travis tests
+- [ ] Makefile
+  - [ ] Run & enforce hindent
+  - [ ] Run & enforce hlint
+  - [ ] Make a Docker image
+- [ ] Embrace optparse-applicative's completion
 
-- [ ] Manual metrics increment in handler
-- [ ] Top-level module
-- [ ] Tests
+### Code improvements
+
+- [ ] Put everything in a top-level module
+- [ ] Add a basic test suite
   - [ ] servant-aeson-hspec
   - [ ] servant-quickcheck
-- [ ] circle CI
-- [ ] Actually make it a template project (using cookiecutter?)
-- [ ] docker image make target
-- [ ] Internal haddock documentation
-
-### Tweaks
-
-- too many decimals in time format output
-- name of app being instrumented
-- use optparse-applicative to get completion
-- shake, possibly?
+- [ ] Reader monad to pass in metrics
+- [ ] Switch to [prometheus](https://hackage.haskell.org/package/prometheus)
+  library if it ever gets `Vector` support:
+  https://github.com/LukeHoersten/prometheus/issues/1

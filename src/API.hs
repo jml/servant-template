@@ -45,15 +45,9 @@ server = pure RootPage :<|> Log.withLogging users :<|> metrics
 users
   :: (MonadIO m, MonadLog (WithSeverity LText) m)
   => m [User]
-users = simulateNormalCode [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
-  where
-    simulateNormalCode x = do
-      r <- liftIO randomIO
-      if r < (0.05 :: Double)
-        then do
-          Log.log Error ("Need more money" :: LText)
-          panic "Credit expired. Insert coin to proceed."
-        else pure x
+users = do
+  Log.log Info ("Example of logging" :: LText)
+  pure [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
 
 instance MimeRender HTML RootPage where
   mimeRender _ _ =
@@ -61,15 +55,15 @@ instance MimeRender HTML RootPage where
       [NI.text|
          <!doctype html>
          <html>
-         <head><title>hello-prometheus-haskell</title></head>
+         <head><title>{{ cookiecutter.project_name }}</title></head>
          <body>
-         <h1>hello-prometheus-haskell</h1>
+         <h1>{{ cookiecutter.project_name }}</h1>
          <ul>
          <li><a href="/users">users</a></li>
          <li><a href="/metrics"><code>/metrics</code></a></li>
          </ul>
          <p>
-         Source code at <a href="https://github.com/jml/hello-world-haskell">https://github.com/jml/hello-world-haskell</a>
+         Source code at <a href="https://github.com/{{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}">https://github.com/{{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}/</a>
          </p>
          </body>
          <html>

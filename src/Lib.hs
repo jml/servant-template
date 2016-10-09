@@ -57,8 +57,8 @@ options = info (helper <*> parser) description
     description =
       fold
         [ fullDesc
-        , progDesc "Simple web API server"
-        , header "hello-prometheus-haskell - Demo of Prometheus with Haskell"
+        , progDesc "{{ cookiecutter.synopsis }}"
+        , header "{{ cookiecutter.project_name }} - TODO fill this in"
         ]
 
 runApp :: Config -> IO ()
@@ -68,7 +68,7 @@ runApp config@Config {..} = do
   runSettings settings (middleware requests)
   where
     settings = warpSettings config
-    middleware r = logging . instrumentApp r "hello_world" $ app
+    middleware r = logging . instrumentApp r "{{ cookiecutter.metric_namespace }}" $ app
     logging =
       case accessLogs of
         Disabled -> identity

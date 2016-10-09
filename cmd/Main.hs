@@ -4,7 +4,7 @@ module Main
 
 import Protolude
 
-import Lib
+import Lib (startApp)
 
 main :: IO ()
 main = startApp

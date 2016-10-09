@@ -1,13 +1,1 @@
 resolver: lts-7.2
-
-packages:
-  - '.'
-  - location:
-      # Merge in:
-      # - https://github.com/ocharles/logging-effect/pull/6
-      # - https://github.com/ocharles/logging-effect/pull/9
-      #
-      # To get GHC 8.0 support and mapLogMessagesM
-      git: https://github.com/jml/logging-effect.git
-      commit: ffddf26818b81c600a965cea0d271b2512a0f272
-    extra-dep: true
