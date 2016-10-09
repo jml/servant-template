@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 
-module {{ cookiecutter.module_name }}.Lib
+module {{ cookiecutter.module_name }}.Server
   ( startApp
   ) where
 
