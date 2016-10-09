@@ -22,13 +22,13 @@ It makes a couple of opinionated decisions:
 
 * GHC 8.0 only
 * Built with Stack
-* Uses `package.yaml`
-  (from [hpack](https://hackage.haskell.org/package/hpack)) to configure
-  dependencies etc.
+* Uses `package.yaml` (from [hpack](https://hackage.haskell.org/package/hpack)) to configure dependencies etc.
 * [Protolude](https://github.com/sdiehl/protolude) as the Prelude
-* The root page of the service has a simple HTML page intended for use by
-  developers
+* The root page of the service has a simple HTML page intended for use by developers
 * The hackage name is the repo name is the project name
+* Uses CircleCI as its default CI tool
+
+Many of these opinions are lightly held. If this template would be more useful to you with some of them changed, please [file an issue](https://github.com/jml/servant-template/issues/new) or submit a PR.
 
 Note that the Cabal file is not checked in to this cookiecutter template.
 
@@ -39,13 +39,11 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
 ### Management
 
 - [ ] More Haddock documentation
-- [ ] Add CircleCI / Travis tests
 - [ ] Makefile
   - [ ] Run & enforce hindent
   - [ ] Run & enforce hlint
   - [ ] Make a Docker image
-- [ ] Remove custom logging-effect dependency once new features have been
-  released
+- [ ] Remove custom logging-effect dependency once new features have been released
 
 ### Code improvements
 
@@ -53,7 +51,5 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
   - [ ] servant-aeson-hspec
   - [ ] servant-quickcheck
 - [ ] Reader monad to pass in metrics
-- [ ] Switch to [prometheus](https://hackage.haskell.org/package/prometheus)
-  library if it ever gets `Vector` support:
-  https://github.com/LukeHoersten/prometheus/issues/1
+- [ ] Switch to [prometheus](https://hackage.haskell.org/package/prometheus) library if it ever gets `Vector` support: https://github.com/LukeHoersten/prometheus/issues/1
 - [ ] Embrace optparse-applicative's completion
