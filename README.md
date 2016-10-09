@@ -4,19 +4,20 @@
 
 ## About this template
 
-This is a template for making HTTP APIs with Servant that starts off by being
-very close to production ready.
+This is a template for making HTTP APIs with Servant that starts off by being very close to production ready.
 
-Specifically:
+To use it:
 
-* logging by
-  using [logging-effect](http://hackage.haskell.org/package/logging-effect)
-* Prometheus instrumentation
-  using
-  [prometheus-client](https://hackage.haskell.org/package/prometheus-client)
-* command-line parsing
-  with
-  [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
+```
+$ pip install --user cookiecutter
+$ cookiecutter gh:jml/servant-template
+```
+
+Things you get with this template:
+
+* logging using [logging-effect](http://hackage.haskell.org/package/logging-effect)
+* Prometheus instrumentation using [prometheus-client](https://hackage.haskell.org/package/prometheus-client)
+* command-line parsing with [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
 
 It makes a couple of opinionated decisions:
 
@@ -27,11 +28,9 @@ It makes a couple of opinionated decisions:
   dependencies etc.
 * [Protolude](https://github.com/sdiehl/protolude) as the Prelude
 
-Note that the Cabal file is not checked in to this cookiecutter template. 
+Note that the Cabal file is not checked in to this cookiecutter template.
 
-Uses
-[Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md),
-enforced by [hindent](https://github.com/chrisdone/hindent)
+Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md), enforced by [hindent](https://github.com/chrisdone/hindent)
 
 ## TODO
 
