@@ -48,10 +48,12 @@ options = info (helper <*> parser) description
         (eitherReader parseAccessLogs)
         (fold
            [long "access-logs", help "How to log HTTP access", value Disabled])
+
     parseAccessLogs "none" = pure Disabled
     parseAccessLogs "basic" = pure Enabled
     parseAccessLogs "dev" = pure DevMode
     parseAccessLogs _ = throwError "One of 'none', 'basic', or 'dev'"
+
     description =
       fold
         [ fullDesc

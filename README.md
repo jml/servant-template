@@ -12,18 +12,19 @@ Run with `+RTS -T` to get GHC metrics (e.g. garbage collection).
 
 ## Template project TODO
 
-- [ ] Actually make it a template project (using cookiecutter?)
 - [ ] Manual metrics increment in handler
-- [ ] circle CI
-- [ ] docker image make target
-- [ ] Internal haddock documentation
+- [ ] Top-level module
 - [ ] Tests
   - [ ] servant-aeson-hspec
   - [ ] servant-quickcheck
-- [ ] Top-level module
+- [ ] circle CI
+- [ ] Actually make it a template project (using cookiecutter?)
+- [ ] docker image make target
+- [ ] Internal haddock documentation
 
 ### Tweaks
 
 - too many decimals in time format output
 - name of app being instrumented
 - use optparse-applicative to get completion
+- shake, possibly?
