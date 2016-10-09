@@ -63,7 +63,7 @@ instance MimeRender HTML RootPage where
          <li><a href="/metrics"><code>/metrics</code></a></li>
          </ul>
          <p>
-         Source code at <a href="https://github.com/{{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}">https://github.com/{{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}/</a>
+         Source code at <a href="https://github.com/{{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}">https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}/</a>
          </p>
          </body>
          <html>

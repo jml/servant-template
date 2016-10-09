@@ -1,8 +1,9 @@
 {
-    "project_name": nil,
-    "synopsis": nil,
-    "category": nil,
-    "github_id": nil,
-    "maintainer": nil,
+    "project_name": "awesome-service",
+    "synopsis": "One line description of project",
+    "category": "Web",
+    "github_username": "hackerx",
+    "full_name": "Hacker X",
+    "email": "hackerx@awesome-services.net",
     "metric_namespace": nil
 }

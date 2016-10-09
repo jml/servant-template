@@ -27,6 +27,8 @@ It makes a couple of opinionated decisions:
   (from [hpack](https://hackage.haskell.org/package/hpack)) to configure
   dependencies etc.
 * [Protolude](https://github.com/sdiehl/protolude) as the Prelude
+* The root page of the service has a simple HTML page intended for use by
+  developers
 
 Note that the Cabal file is not checked in to this cookiecutter template.
 

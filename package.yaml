@@ -2,9 +2,9 @@ name: {{ cookiecutter.project_name }}
 version: 0.1.0
 synopsis: {{ cookiecutter.synopsis }}
 description: Please see README.md
-maintainer: {{ cookiecutter.maintainer }}
+maintainer: {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>
 license: Apache
-github: {{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}
+github: {{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}
 category: {{ cookiecutter.category }}
 
 ghc-options: -Wall -Werror
@@ -29,7 +29,6 @@ library:
     - optparse-applicative
     - prometheus-client
     - prometheus-metrics-ghc
-    - random
     - servant-server
     - time
     - wai
