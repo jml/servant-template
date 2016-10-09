@@ -1,3 +1,4 @@
+-- | Definition of HTML content type.
 module {{ cookiecutter.module_name }}.ContentTypes
   ( HTML
   ) where

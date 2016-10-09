@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
@@ -6,6 +5,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TypeOperators #-}
 
+-- | API definition for {{ cookiecutter.project_name }}.
 module {{ cookiecutter.module_name}}.API
   ( API
   , server
@@ -33,11 +33,10 @@ instance FromJSON User
 
 instance ToJSON User
 
-data RootPage =
-  RootPage
-
+-- | {{ cookiecutter.project_name }} API definition.
 type API = Get '[HTML] RootPage :<|> "users" :> Get '[JSON] [User] :<|> "metrics" :> Raw
 
+-- | {{ cookiecutter.project_name }} API implementation.
 server :: Server API
 server = pure RootPage :<|> Log.withLogging users :<|> metrics
 
@@ -48,6 +47,11 @@ users = do
   Log.log Informational ("Example of logging" :: LText)
   pure [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
 
+-- | Represents the root page of the service.
+data RootPage =
+  RootPage
+
+-- | Very simple root HTML page.
 instance MimeRender HTML RootPage where
   mimeRender _ _ =
     toS

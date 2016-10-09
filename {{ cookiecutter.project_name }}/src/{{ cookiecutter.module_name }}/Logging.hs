@@ -1,9 +1,9 @@
 {-# LANGUAGE FlexibleContexts #-}
 
+-- | Logging helpers for {{ cookiecutter.project_name }}.
 module {{ cookiecutter.module_name }}.Logging
   ( withLogging
   , log
-  , info
   ) where
 
 import Protolude hiding (log)
@@ -18,6 +18,7 @@ import Text.PrettyPrint.Leijen.Text (Pretty(..))
 
 type LogM msg m a = LoggingT (WithSeverity msg) (LoggingT (WithTimestamp (WithSeverity msg)) m) a
 
+-- | Take a bunch of logs with severity and print them to stdout with timestamps.
 withLogging
   :: (MonadIO m, Pretty msg)
   => LogM msg m a -> m a
@@ -37,12 +38,8 @@ printLogs =
     timeFormatter = formatTime defaultTimeLocale timeFormat
     timeFormat = iso8601DateFormat (Just "%H:%M:%S.%q")
 
+-- | Convenience method to log with severity.
 log
   :: MonadLog (WithSeverity a) m
   => Severity -> a -> m ()
 log severity msg = logMessage (WithSeverity severity msg)
-
-info
-  :: MonadLog (WithSeverity a) m
-  => a -> m ()
-info = log Informational

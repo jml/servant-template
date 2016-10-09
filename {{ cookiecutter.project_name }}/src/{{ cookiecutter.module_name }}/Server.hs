@@ -1,12 +1,14 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 
+-- | Serve the API as an HTTP server.
 module {{ cookiecutter.module_name }}.Server
   ( startApp
   ) where
 
 import Protolude
 
+import Control.Monad.Log (Severity(..))
 import Network.Wai.Handler.Warp
        (Port, Settings, defaultSettings, runSettings, setBeforeMainLoop,
         setPort)
@@ -29,12 +31,14 @@ data Config = Config
   , accessLogs :: AccessLogs
   } deriving (Show)
 
+-- | What level of access logs to show.
 data AccessLogs
-  = Disabled
-  | Enabled
-  | DevMode
+  = Disabled -- ^ Don't show access logs.
+  | Enabled -- ^ Show Apache-style access logs.
+  | DevMode -- ^ Show detailed, colorful access logs. Not suitable in production.
   deriving (Eq, Show)
 
+-- | Run the service.
 startApp :: IO ()
 startApp = runApp =<< execParser options
 
@@ -48,12 +52,10 @@ options = info (helper <*> parser) description
         (eitherReader parseAccessLogs)
         (fold
            [long "access-logs", help "How to log HTTP access", value Disabled])
-
     parseAccessLogs "none" = pure Disabled
     parseAccessLogs "basic" = pure Enabled
     parseAccessLogs "dev" = pure DevMode
     parseAccessLogs _ = throwError "One of 'none', 'basic', or 'dev'"
-
     description =
       fold
         [ fullDesc
@@ -83,4 +85,4 @@ warpSettings :: Config -> Settings
 warpSettings Config {..} =
   setBeforeMainLoop (Log.withLogging printPort) (setPort port defaultSettings)
   where
-    printPort = Log.info (text "Listening on :" `mappend` int port)
+    printPort = Log.log Informational (text "Listening on :" `mappend` int port)

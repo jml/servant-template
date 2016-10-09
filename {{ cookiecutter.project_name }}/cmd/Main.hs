@@ -1,3 +1,4 @@
+-- | Launch {{ cookiecutter.project_name }} server.
 module Main
   ( main
   ) where

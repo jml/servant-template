@@ -39,7 +39,6 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
 
 ### Management
 
-- [ ] More Haddock documentation
 - [ ] Make a Docker image
 - [ ] Remove custom logging-effect dependency once new features have been released
 
@@ -51,3 +50,4 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
 - [ ] Reader monad to pass in metrics
 - [ ] Switch to [prometheus](https://hackage.haskell.org/package/prometheus) library if it ever gets `Vector` support: https://github.com/LukeHoersten/prometheus/issues/1
 - [ ] Embrace optparse-applicative's completion
+- [ ] Move `/metrics` out of the API and into the top-level Server.hs

@@ -1,3 +1,4 @@
+-- | Prometheus instrumentation for {{ cookiecutter.project_name }}.
 module {{ cookiecutter.module_name }}.Instrument
   ( metrics
   , requestDuration
@@ -12,6 +13,14 @@ import qualified Network.HTTP.Types as HTTP
 import qualified Network.Wai as Wai
 import qualified Prometheus as Prom
 
+-- | Core information about HTTP requests:
+--
+-- Labels:
+-- * handler: the name of the application
+-- * method: the HTTP method requested
+-- * status_code: the HTTP response code
+--
+-- Actual metric is the latency of the request.
 type RequestDuration = Prom.Metric (Prom.Vector Prom.Label3 Prom.Summary)
 
 requestDuration :: IO RequestDuration
@@ -51,6 +60,8 @@ instrumentApp metric handler app req respond = do
         method = toS (Wai.requestMethod req)
         status = show statusCode
 
+-- | Application that serves the Prometheus /metrics page regardless of what
+-- was requested.
 metrics :: Wai.Application
 metrics = const respondWithMetrics
 
