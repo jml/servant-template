@@ -18,7 +18,6 @@ import Data.Aeson (FromJSON, ToJSON)
 import qualified NeatInterpolation as NI
 import Servant
        ((:>), (:<|>)(..), Get, JSON, MimeRender(..), Raw, Server)
-import System.Random (randomIO)
 
 import {{ cookiecutter.module_name }}.ContentTypes (HTML)
 import {{ cookiecutter.module_name }}.Instrument (metrics)
@@ -46,7 +45,7 @@ users
   :: (MonadIO m, MonadLog (WithSeverity LText) m)
   => m [User]
 users = do
-  Log.log Info ("Example of logging" :: LText)
+  Log.log Informational ("Example of logging" :: LText)
   pure [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
 
 instance MimeRender HTML RootPage where
@@ -63,7 +62,7 @@ instance MimeRender HTML RootPage where
          <li><a href="/metrics"><code>/metrics</code></a></li>
          </ul>
          <p>
-         Source code at <a href="https://github.com/{{ cookiecutter.github_id }}/{{ cookiecutter.project_name }}">https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}/</a>
+         Source code at <a href="https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}">https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}/</a>
          </p>
          </body>
          <html>

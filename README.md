@@ -28,6 +28,7 @@ It makes a couple of opinionated decisions:
 * [Protolude](https://github.com/sdiehl/protolude) as the Prelude
 * The root page of the service has a simple HTML page intended for use by
   developers
+* The hackage name is the repo name is the project name
 
 Note that the Cabal file is not checked in to this cookiecutter template.
 
@@ -43,6 +44,8 @@ Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/bl
   - [ ] Run & enforce hindent
   - [ ] Run & enforce hlint
   - [ ] Make a Docker image
+- [ ] Remove custom logging-effect dependency once new features have been
+  released
 
 ### Code improvements
 
