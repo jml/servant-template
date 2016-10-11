@@ -41,7 +41,6 @@ You can build a Docker image with `make image`.
 
 ### Management
 
-- [ ] Remove custom logging-effect dependency once new features have been released
 - [ ] Make the Docker image actually work (libstdc++)
 
 ### Code improvements
