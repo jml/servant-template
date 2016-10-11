@@ -11,3 +11,8 @@ packages:
       git: https://github.com/jml/logging-effect.git
       commit: ffddf26818b81c600a965cea0d271b2512a0f272
     extra-dep: true
+
+image:
+  container:
+    base: {{ cookiecutter.image_base }}
+    name: {{ cookiecutter.image_name }}

@@ -1,4 +1,4 @@
-.PHONY: check clean docs format lint
+.PHONY: check clean docs format image lint
 
 check:
 	stack test --fast
@@ -14,3 +14,6 @@ format:
 
 lint:
 	hlint -q .
+
+image:
+	./scripts/build-image $(shell ./scripts/image-tag)

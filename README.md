@@ -35,12 +35,14 @@ Note that the Cabal file is not checked in to this cookiecutter template.
 
 Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md), enforced by [hindent](https://github.com/chrisdone/hindent)
 
+You can build a Docker image with `make image`.
+
 ## TODO
 
 ### Management
 
-- [ ] Make a Docker image
 - [ ] Remove custom logging-effect dependency once new features have been released
+- [ ] Make the Docker image actually work (libstdc++)
 
 ### Code improvements
 

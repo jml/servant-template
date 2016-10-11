@@ -6,5 +6,7 @@
     "full_name": "Hacker X",
     "email": "hackerx@awesome-services.net",
     "metric_namespace": "awesome_service",
-    "module_name": "AwesomeService"
+    "module_name": "AwesomeService",
+    "image_name": "awesome-service",
+    "image_base": "fpco/haskell-scratch:integer-gmp"
 }
