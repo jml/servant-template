@@ -1,0 +1,53 @@
+name: {{ cookiecutter.project_name }}-server
+version: 0.1.0
+synopsis: {{ cookiecutter.synopsis }}
+description: Please see README.md
+maintainer: {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>
+license: Apache
+github: {{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}
+category: {{ cookiecutter.category }}
+
+ghc-options: -Wall -Werror
+default-extensions:
+  - NoImplicitPrelude
+  - OverloadedStrings
+  - RecordWildCards
+
+dependencies:
+  - base >= 4.9 && < 5
+  - protolude
+
+library:
+  source-dirs: src
+  dependencies:
+    - {{ cookiecutter.project_name}}-api
+    - aeson
+    - bytestring
+    - http-media
+    - http-types
+    - logging-effect
+    - optparse-applicative
+    - prometheus-client
+    - prometheus-metrics-ghc
+    - servant-server
+    - time
+    - wai
+    - wai-extra
+    - wai-middleware-prometheus
+    - warp
+    - wl-pprint-text
+
+executables:
+  {{ cookiecutter.project_name }}:
+    main: Main.hs
+    source-dirs: cmd
+    dependencies:
+      - {{ cookiecutter.project_name }}-server
+
+tests:
+  {{ cookiecutter.project_name }}-server-tests:
+    main: Main.hs
+    source-dirs: tests
+    dependencies:
+      - {{ cookiecutter.project_name }}-server
+      - tasty

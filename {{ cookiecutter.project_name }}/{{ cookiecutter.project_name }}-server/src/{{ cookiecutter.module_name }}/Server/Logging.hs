@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 -- | Logging helpers for {{ cookiecutter.project_name }}.
-module {{ cookiecutter.module_name }}.Logging
+module {{ cookiecutter.module_name }}.Server.Logging
   ( withLogging
   , log
   ) where

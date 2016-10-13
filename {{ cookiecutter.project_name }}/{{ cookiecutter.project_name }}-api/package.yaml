@@ -1,4 +1,4 @@
-name: {{ cookiecutter.project_name }}
+name: {{ cookiecutter.project_name }}-api
 version: 0.1.0
 synopsis: {{ cookiecutter.synopsis }}
 description: Please see README.md
@@ -21,33 +21,14 @@ library:
   source-dirs: src
   dependencies:
     - aeson
-    - bytestring
     - http-media
-    - http-types
-    - logging-effect
     - neat-interpolation
-    - optparse-applicative
-    - prometheus-client
-    - prometheus-metrics-ghc
-    - servant-server
-    - time
-    - wai
-    - wai-extra
-    - wai-middleware-prometheus
-    - warp
-    - wl-pprint-text
-
-executables:
-  {{ cookiecutter.project_name }}:
-    main: Main.hs
-    source-dirs: cmd
-    dependencies:
-      - {{ cookiecutter.project_name }}
+    - servant
 
 tests:
-  {{ cookiecutter.project_name }}-tests:
-    main: Spec.hs
+  {{ cookiecutter.project_name }}-api-tests:
+    main: Main.hs
     source-dirs: tests
     dependencies:
-      - {{ cookiecutter.project_name }}
+      - {{ cookiecutter.project_name }}-api
       - tasty

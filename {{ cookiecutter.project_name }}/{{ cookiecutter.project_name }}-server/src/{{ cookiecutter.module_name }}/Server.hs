@@ -21,9 +21,10 @@ import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
 import Text.PrettyPrint.Leijen.Text (int, text)
 
-import {{ cookiecutter.module_name }}.API (API, server)
-import {{ cookiecutter.module_name }}.Instrument (instrumentApp, requestDuration)
-import qualified {{ cookiecutter.module_name }}.Logging as Log
+import {{ cookiecutter.module_name }}.API (API)
+import {{ cookiecutter.module_name }}.Server.Handlers (server)
+import {{ cookiecutter.module_name }}.Server.Instrument (instrumentApp, requestDuration)
+import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
 
 -- | Configuration for the application.
 data Config = Config

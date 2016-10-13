@@ -1,7 +1,8 @@
 resolver: lts-7.2
 
 packages:
-  - '.'
+  - {{ cookiecutter.project_name }}-api
+  - {{ cookiecutter.project_name }}-server
 
 extra-deps:
   - logging-effect-1.1.0

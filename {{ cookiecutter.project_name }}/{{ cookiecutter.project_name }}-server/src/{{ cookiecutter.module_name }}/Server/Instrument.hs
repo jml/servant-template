@@ -1,5 +1,5 @@
 -- | Prometheus instrumentation for {{ cookiecutter.project_name }}.
-module {{ cookiecutter.module_name }}.Instrument
+module {{ cookiecutter.module_name }}.Server.Instrument
   ( metrics
   , requestDuration
   , instrumentApp

@@ -10,4 +10,4 @@ main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "hello-prometheus-haskell" []
+tests = testGroup "{{ cookiecutter.module_name }}.Server" []

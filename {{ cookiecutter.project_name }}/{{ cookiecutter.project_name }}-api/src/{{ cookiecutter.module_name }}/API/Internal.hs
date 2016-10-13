@@ -1,10 +1,10 @@
 -- | Definition of HTML content type.
-module {{ cookiecutter.module_name }}.ContentTypes
+module {{ cookiecutter.module_name }}.API.Internal
   ( HTML
   ) where
 
 import Network.HTTP.Media ((//), (/:))
-import Servant (Accept(..))
+import Servant.API (Accept(..))
 
 -- | HTML content type.
 data HTML

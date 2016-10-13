@@ -28,6 +28,8 @@ It makes a few opinionated decisions:
 * The hackage name is the repo name is the project name
 * Uses CircleCI as its default CI tool
 * Enforces hindent-formatted code in CI
+* The code that defines the API is in a separate library to the code that
+  implements it
 
 Many of these opinions are lightly held. If this template would be more useful to you with some of them changed, please [file an issue](https://github.com/jml/servant-template/issues/new) or submit a PR.
 
@@ -36,19 +38,3 @@ Note that the Cabal file is not checked in to this cookiecutter template.
 Uses [Johan Tibbe's style guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md), enforced by [hindent](https://github.com/chrisdone/hindent)
 
 You can build a Docker image with `make image`.
-
-## TODO
-
-### Management
-
-- [ ] Make the Docker image actually work (libstdc++)
-
-### Code improvements
-
-- [ ] Add a basic test suite
-  - [ ] servant-aeson-hspec
-  - [ ] servant-quickcheck
-- [ ] Reader monad to pass in metrics
-- [ ] Switch to [prometheus](https://hackage.haskell.org/package/prometheus) library if it ever gets `Vector` support: https://github.com/LukeHoersten/prometheus/issues/1
-- [ ] Embrace optparse-applicative's completion
-- [ ] Move `/metrics` out of the API and into the top-level Server.hs

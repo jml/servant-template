@@ -4,6 +4,11 @@
 
 {{cookiecutter.synopsis}}
 
+Contains:
+
+* {{ cookiecutter.project_name }}-api -- API definition for {{cookiecutter.project_name }}
+* {{ cookiecutter.project_name }}-server -- Server implementation of the {{cookiecutter.project_name }} API
+
 ## What it is
 
 ## Why you might want it

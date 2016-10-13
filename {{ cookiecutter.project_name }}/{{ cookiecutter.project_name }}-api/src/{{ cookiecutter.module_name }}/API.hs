@@ -1,4 +1,3 @@
-{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -8,20 +7,17 @@
 -- | API definition for {{ cookiecutter.project_name }}.
 module {{ cookiecutter.module_name}}.API
   ( API
-  , server
+  , RootPage(..)
+  , User(User)
   ) where
 
-import Protolude hiding (Handler)
+import Protolude
 
-import Control.Monad.Log (MonadLog, Severity(..), WithSeverity)
 import Data.Aeson (FromJSON, ToJSON)
 import qualified NeatInterpolation as NI
-import Servant
-       ((:>), (:<|>)(..), Get, JSON, MimeRender(..), Raw, Server)
+import Servant.API ((:>), (:<|>)(..), Get, JSON, MimeRender(..), Raw)
 
-import {{ cookiecutter.module_name }}.ContentTypes (HTML)
-import {{ cookiecutter.module_name }}.Instrument (metrics)
-import qualified {{ cookiecutter.module_name }}.Logging as Log
+import {{ cookiecutter.module_name }}.API.Internal (HTML)
 
 data User = User
   { _userId :: Int
@@ -36,22 +32,11 @@ instance ToJSON User
 -- | {{ cookiecutter.project_name }} API definition.
 type API = Get '[HTML] RootPage :<|> "users" :> Get '[JSON] [User] :<|> "metrics" :> Raw
 
--- | {{ cookiecutter.project_name }} API implementation.
-server :: Server API
-server = pure RootPage :<|> Log.withLogging users :<|> metrics
-
-users
-  :: (MonadIO m, MonadLog (WithSeverity LText) m)
-  => m [User]
-users = do
-  Log.log Informational ("Example of logging" :: LText)
-  pure [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
-
 -- | Represents the root page of the service.
-data RootPage =
-  RootPage
+data RootPage = RootPage
 
--- | Very simple root HTML page.
+-- | Very simple root HTML page. Replace this with your own simple page that
+-- describes your API to other developers and sysadmins.
 instance MimeRender HTML RootPage where
   mimeRender _ _ =
     toS
