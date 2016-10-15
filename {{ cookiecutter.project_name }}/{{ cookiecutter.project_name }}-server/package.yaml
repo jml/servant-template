@@ -23,9 +23,11 @@ library:
     - {{ cookiecutter.project_name}}-api
     - aeson
     - bytestring
+    - exceptions
     - http-media
     - http-types
     - logging-effect
+    - mtl
     - optparse-applicative
     - prometheus-client
     - prometheus-metrics-ghc
