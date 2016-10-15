@@ -6,8 +6,3 @@ packages:
 
 extra-deps:
   - logging-effect-1.1.0
-
-image:
-  container:
-    base: {{ cookiecutter.image_base }}
-    name: {{ cookiecutter.image_name }}

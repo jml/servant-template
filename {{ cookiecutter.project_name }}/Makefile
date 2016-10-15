@@ -1,5 +1,8 @@
 .PHONY: check clean docs format image lint
 
+IMAGE_NAME := {{ cookiecutter.project_name }}
+IMAGE_TAG := $(shell ./scripts/image-tag)
+
 check:
 	stack test --fast
 
@@ -16,4 +19,4 @@ lint:
 	hlint -q .
 
 image:
-	./scripts/build-image $(shell ./scripts/image-tag)
+	./scripts/build-image "{{ cookiecutter.project_name }}" $(IMAGE_NAME):$(IMAGE_TAG)

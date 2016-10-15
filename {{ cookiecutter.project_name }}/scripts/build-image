@@ -1,11 +1,65 @@
 #!/usr/bin/env bash
-
-image_tag="${1}"
+#
+# Copyright (c) Jonathan M. Lange, 2016. Made available under the Apache 2
+# license.
+#
+# Build a minimal Docker image for our binary.
+#
+# Run with:
+#   build-image /path/to/binary image-name:image-tag
 
 {% raw %}
-image_id=$(stack --docker image container --build  | tail -n-1 | awk '{{ print $3 }}')
-image_name=$(docker images --format '{{ .Repository }}\t{{ .ID }}' | grep "${image_id}" | head -n1 | cut -f1)
-{% endraw %}
 
-docker tag "${image_id}" "${image_name}:${image_tag}"
-echo "${image_name}:${image_tag}"
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# The name of the image where the binary was built. We use this image to look
+# up shared library dependencies with 'ldd', and we copy those libraries from
+# this image.
+#
+# Assumes the image has 'ldd' installed on the path.
+BUILD_IMAGE="fpco/stack-build:lts-7.2" # XXX: Make this a parameter?
+
+# Dependencies
+STACK=stack
+DOCKER=docker
+AWK=awk
+GREP=grep
+CP=cp
+MKDIR=mkdir
+TAR=tar
+
+exe_name="${1}" # XXX: Change this to take the full binary path & infer exe name.
+image_name="${2}"
+
+"${STACK}" --docker build
+bin_path=$("${STACK}" --docker exec which "${exe_name}")
+
+# Run stack-build container so we can copy things into and out of it.
+build_container=$("${DOCKER}" run -d "${BUILD_IMAGE}" tail -f /dev/null)
+trap '"${DOCKER}" stop "${build_container}" >/dev/null' EXIT
+
+# Copy the built binary to the build container so we can identify libraries
+"${DOCKER}" cp "${bin_path}" "${build_container}:/${exe_name}"
+
+# Identify linked libraries
+libraries=( $( "${DOCKER}" exec "${build_container}" ldd "/${exe_name}" | "${AWK}" '{print $(NF-1)}' | "${GREP}" -v '=>' ) )
+libraries+=('/bin/sh')
+
+# Create temporary directory for building up new container.
+run_container_dir=$(mktemp -d 2>/dev/null || mktemp -d -t "${exe_name}")
+
+# Copy executable and all needed libraries into temporary directory.
+"${CP}" "${bin_path}" "${run_container_dir}/${exe_name}"
+for lib in "${libraries[@]}"; do
+    "${MKDIR}" -p "${run_container_dir}/$(dirname "$lib")"
+    # Need -L to make sure we get actual libraries & binaries, not symlinks to
+    # them.
+    "${DOCKER}" cp -L "${build_container}:${lib}" "${run_container_dir}/${lib}"
+done
+
+"${TAR}" -C "${run_container_dir}" -c . | "${DOCKER}" import --change "ENTRYPOINT [\"/${exe_name}\"]" - "${image_name}"
+echo "${image_name}"
+
+{% endraw %}
