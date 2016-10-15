@@ -7,20 +7,20 @@
 #
 # Run with:
 #   build-image /path/to/binary image-name image-tag
+#
+# Dependencies:
+# - awk
+# - cp
+# - docker
+# - grep
+# - mkdir
+# - tar
 
 {% raw %}
 
 set -o errexit
 set -o nounset
 set -o pipefail
-
-# Dependencies
-DOCKER=docker
-AWK=awk
-GREP=grep
-CP=cp
-MKDIR=mkdir
-TAR=tar
 
 # The name of the image where the binary was built. We use this image to look
 # up shared library dependencies with 'ldd', and we copy those libraries from
@@ -38,30 +38,30 @@ image_tag="${4}"
 exe_name=$(basename "${binary_path}")
 
 # Run a container for the build image so we can copy things into and out of it.
-build_container=$("${DOCKER}" run -d "${build_image}" tail -f /dev/null)
-trap '"${DOCKER}" stop "${build_container}" >/dev/null' EXIT
+build_container=$(docker run -d "${build_image}" tail -f /dev/null)
+trap 'docker stop "${build_container}" >/dev/null' EXIT
 
 # Copy the built binary to the build container so we can identify libraries
-"${DOCKER}" cp "${binary_path}" "${build_container}:/${exe_name}"
+docker cp "${binary_path}" "${build_container}:/${exe_name}"
 
 # Identify linked libraries
-libraries=( $( "${DOCKER}" exec "${build_container}" ldd "/${exe_name}" | "${AWK}" '{print $(NF-1)}' | "${GREP}" -v '=>' ) )
+libraries=( $( docker exec "${build_container}" ldd "/${exe_name}" | awk '{print $(NF-1)}' | grep -v '=>' ) )
 libraries+=('/bin/sh')
 
 # Create temporary directory for building up new container.
 run_container_dir=$(mktemp -d 2>/dev/null || mktemp -d -t "${exe_name}")
 
 # Copy executable and all needed libraries into temporary directory.
-"${CP}" "${binary_path}" "${run_container_dir}/${exe_name}"
+cp "${binary_path}" "${run_container_dir}/${exe_name}"
 for lib in "${libraries[@]}"; do
-    "${MKDIR}" -p "${run_container_dir}/$(dirname "$lib")"
+    mkdir -p "${run_container_dir}/$(dirname "$lib")"
     # Need -L to make sure we get actual libraries & binaries, not symlinks to
     # them.
-    "${DOCKER}" cp -L "${build_container}:${lib}" "${run_container_dir}/${lib}"
+    docker cp -L "${build_container}:${lib}" "${run_container_dir}/${lib}"
 done
 
-"${TAR}" -C "${run_container_dir}" -c . | "${DOCKER}" import --change "ENTRYPOINT [\"/${exe_name}\"]" - "${image_name}"
-"${DOCKER}" tag "${image_name}" "${image_name}:${image_tag}"
+tar -C "${run_container_dir}" -c . | docker import --change "ENTRYPOINT [\"/${exe_name}\"]" - "${image_name}"
+docker tag "${image_name}" "${image_name}:${image_tag}"
 echo "${image_name}:${image_tag}"
 
 {% endraw %}
