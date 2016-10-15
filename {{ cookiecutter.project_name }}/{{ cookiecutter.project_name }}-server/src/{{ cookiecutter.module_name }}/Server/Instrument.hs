@@ -3,6 +3,9 @@ module {{ cookiecutter.module_name }}.Server.Instrument
   ( metrics
   , requestDuration
   , instrumentApp
+  , prometheus
+  , PrometheusSettings(..)
+  , defaultPrometheusSettings
   ) where
 
 import Protolude
@@ -12,6 +15,21 @@ import Data.Time.Clock (diffUTCTime, getCurrentTime)
 import qualified Network.HTTP.Types as HTTP
 import qualified Network.Wai as Wai
 import qualified Prometheus as Prom
+
+-- | Settings that control the behavior of the Prometheus middleware.
+data PrometheusSettings = PrometheusSettings {
+  prometheusEndPoint :: [Text]
+  -- ^ The path that will be used for exporting metrics. The default value
+  -- is ["metrics"] which corresponds to the path /metrics.
+  , prometheusHandlerName :: Maybe Text
+  -- ^ The name of the handler used to record metrics about the Prometheus
+  -- endpoint. If Nothing, then we won't record any.
+}
+
+-- | Default settings for Prometheus. Serve metrics at /metrics and record
+-- latency information for that endpoint with 'handler="metrics"'.
+defaultPrometheusSettings :: PrometheusSettings
+defaultPrometheusSettings = PrometheusSettings ["metrics"] (Just "metrics")
 
 -- | Core information about HTTP requests:
 --
@@ -34,10 +52,6 @@ requestDuration =
         "The HTTP request latencies in microseconds."
 
 -- | Instrument a WAI app with the default WAI metrics.
---
--- If you use this function you will likely want to override the default value
--- of 'prometheusInstrumentApp' to be false so that your app does not get double
--- instrumented.
 instrumentApp
   :: RequestDuration -- ^ The metric to instrument
   -> Text -- ^ The label used to identify this app
@@ -59,6 +73,23 @@ instrumentApp metric handler app req respond = do
       where
         method = toS (Wai.requestMethod req)
         status = show statusCode
+
+-- | Instrument an app with Prometheus and export metrics from the configured
+-- handler.
+prometheus
+  :: PrometheusSettings -- ^ How we're going to use Prometheus
+  -> RequestDuration -- ^ A metric to instrument with request information
+  -> Text -- ^ The label used to identify the app
+  -> Wai.Middleware
+prometheus PrometheusSettings{..} duration appName app req respond
+  = if Wai.requestMethod req == HTTP.methodGet
+       && Wai.pathInfo req == prometheusEndPoint
+    then
+      case prometheusHandlerName of
+        Nothing -> respondWithMetrics respond
+        Just name -> instrumentApp duration name (const respondWithMetrics) req respond
+    else
+      instrumentApp duration appName app req respond
 
 -- | Application that serves the Prometheus /metrics page regardless of what
 -- was requested.

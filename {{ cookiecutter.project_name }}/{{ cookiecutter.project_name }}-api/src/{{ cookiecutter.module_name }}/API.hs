@@ -15,8 +15,7 @@ import Protolude
 
 import Data.Aeson (FromJSON, ToJSON)
 import qualified NeatInterpolation as NI
-import Servant.API
-       ((:>), (:<|>)(..), Get, JSON, MimeRender(..), Raw)
+import Servant.API ((:>), (:<|>)(..), Get, JSON, MimeRender(..))
 
 import {{ cookiecutter.module_name }}.API.Internal (HTML)
 
@@ -31,7 +30,7 @@ instance FromJSON User
 instance ToJSON User
 
 -- | {{ cookiecutter.project_name }} API definition.
-type API = Get '[HTML] RootPage :<|> "users" :> Get '[JSON] [User] :<|> "metrics" :> Raw
+type API = Get '[HTML] RootPage :<|> "users" :> Get '[JSON] [User]
 
 -- | Represents the root page of the service.
 data RootPage =

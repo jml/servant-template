@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE QuasiQuotes #-}
 
 -- | Implementation of the {{ cookiecutter.project_name }} API.
 module {{ cookiecutter.module_name }}.Server.Handlers
@@ -18,11 +17,10 @@ import Servant (Server, (:<|>)(..))
 
 import {{ cookiecutter.module_name }}.API (API, RootPage(..), User(..))
 import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
-import {{ cookiecutter.module_name }}.Server.Instrument (metrics)
 
 -- | {{ cookiecutter.project_name }} API implementation.
 server :: Server API
-server = pure RootPage :<|> Log.withLogging users :<|> metrics
+server = pure RootPage :<|> Log.withLogging users
 
 -- | Example endpoint.
 users
