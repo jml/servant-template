@@ -1,5 +1,7 @@
 # servant-template
 
+[![Circle CI](https://circleci.com/gh/jml/servant-template/tree/master.svg?style=shield)](https://circleci.com/gh/jml/servant-template/tree/master)
+
 A [cookiecutter]({{ cookiecutter.project_name }}) template for (almost) production-ready Servant servers.
 
 My goal is to reduce friction for people starting working on Haskell REST API servers by putting together a few best practices in a way that's not intrusive or prescriptive.

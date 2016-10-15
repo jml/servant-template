@@ -17,14 +17,14 @@ import qualified Network.Wai as Wai
 import qualified Prometheus as Prom
 
 -- | Settings that control the behavior of the Prometheus middleware.
-data PrometheusSettings = PrometheusSettings {
-  prometheusEndPoint :: [Text]
-  -- ^ The path that will be used for exporting metrics. The default value
-  -- is ["metrics"] which corresponds to the path /metrics.
+data PrometheusSettings = PrometheusSettings
+  { prometheusEndPoint :: [Text]
+    -- ^ The path that will be used for exporting metrics. The default value
+    -- is ["metrics"] which corresponds to the path /metrics.
   , prometheusHandlerName :: Maybe Text
-  -- ^ The name of the handler used to record metrics about the Prometheus
-  -- endpoint. If Nothing, then we won't record any.
-}
+    -- ^ The name of the handler used to record metrics about the Prometheus
+    -- endpoint. If Nothing, then we won't record any.
+  }
 
 -- | Default settings for Prometheus. Serve metrics at /metrics and record
 -- latency information for that endpoint with 'handler="metrics"'.
@@ -43,8 +43,7 @@ type RequestDuration = Prom.Metric (Prom.Vector Prom.Label3 Prom.Summary)
 
 requestDuration :: IO RequestDuration
 requestDuration =
-  Prom.vector ("handler", "method", "status_code") $
-  Prom.summary info Prom.defaultQuantiles
+  Prom.vector ("handler", "method", "status_code") $ Prom.summary info Prom.defaultQuantiles
   where
     info =
       Prom.Info
@@ -81,23 +80,20 @@ prometheus
   -> RequestDuration -- ^ A metric to instrument with request information
   -> Text -- ^ The label used to identify the app
   -> Wai.Middleware
-prometheus PrometheusSettings{..} duration appName app req respond
-  = if Wai.requestMethod req == HTTP.methodGet
-       && Wai.pathInfo req == prometheusEndPoint
-    then
-      case prometheusHandlerName of
-        Nothing -> respondWithMetrics respond
-        Just name -> instrumentApp duration name (const respondWithMetrics) req respond
-    else
-      instrumentApp duration appName app req respond
+prometheus PrometheusSettings {..} duration appName app req respond =
+  if Wai.requestMethod req == HTTP.methodGet && Wai.pathInfo req == prometheusEndPoint
+    then case prometheusHandlerName of
+           Nothing -> respondWithMetrics respond
+           Just name ->
+             instrumentApp duration name (const respondWithMetrics) req respond
+    else instrumentApp duration appName app req respond
 
 -- | Application that serves the Prometheus /metrics page regardless of what
 -- was requested.
 metrics :: Wai.Application
 metrics = const respondWithMetrics
 
-respondWithMetrics :: (Wai.Response -> IO Wai.ResponseReceived)
-                   -> IO Wai.ResponseReceived
+respondWithMetrics :: (Wai.Response -> IO Wai.ResponseReceived) -> IO Wai.ResponseReceived
 respondWithMetrics respond = do
   content <- Prom.exportMetricsAsText
   respond $ Wai.responseBuilder HTTP.status200 headers $ byteString content

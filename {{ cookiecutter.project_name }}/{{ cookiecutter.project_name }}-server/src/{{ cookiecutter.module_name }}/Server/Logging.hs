@@ -13,9 +13,10 @@ import Protolude hiding (Handler, log)
 
 import Control.Monad.Catch (MonadMask)
 import Control.Monad.Log
-       (Handler, LoggingT, MonadLog, Severity(..), WithTimestamp(..), WithSeverity(..),
-        defaultBatchingOptions, logMessage, mapLogMessageM, renderWithSeverity,
-        renderWithTimestamp, runLoggingT, timestamp, withFDHandler)
+       (Handler, LoggingT, MonadLog, Severity(..), WithTimestamp(..),
+        WithSeverity(..), defaultBatchingOptions, logMessage,
+        mapLogMessageM, renderWithSeverity, renderWithTimestamp,
+        runLoggingT, timestamp, withFDHandler)
 import Data.Time.Format
        (defaultTimeLocale, formatTime, iso8601DateFormat)
 import Text.PrettyPrint.Leijen.Text (Doc, Pretty(..))
@@ -27,8 +28,11 @@ withLogging
   :: (MonadMask m, MonadIO m, Pretty msg)
   => Severity -> LogM msg m a -> m a
 withLogging severityThreshold body =
-  withFDHandler defaultBatchingOptions stdout 0.4 80 $ \stdoutHandler ->
-    runLoggingT (withTimestamps body) (printLogs severityThreshold stdoutHandler)
+  withFDHandler defaultBatchingOptions stdout 0.4 80 $
+  \stdoutHandler ->
+     runLoggingT
+       (withTimestamps body)
+       (printLogs severityThreshold stdoutHandler)
 
 withTimestamps
   :: (MonadIO m, MonadLog (WithTimestamp msg) m)
@@ -36,13 +40,16 @@ withTimestamps
 withTimestamps = mapLogMessageM timestamp
 
 type Keyword = Text
-fromKeyword :: Alternative m => Keyword -> m Severity
+
+fromKeyword
+  :: Alternative m
+  => Keyword -> m Severity
 fromKeyword "emerg" = pure Emergency
 fromKeyword "alert" = pure Alert
 fromKeyword "crit" = pure Critical
 fromKeyword "err" = pure Error
 fromKeyword "error" = pure Error
-fromKeyword "warning" = pure Warning  -- A friend in need's a friend indeed.
+fromKeyword "warning" = pure Warning -- A friend in need's a friend indeed.
 fromKeyword "warn" = pure Warning
 fromKeyword "notice" = pure Notice
 fromKeyword "info" = pure Informational
@@ -64,7 +71,7 @@ printLogs
   => Severity -> Handler m Doc -> WithTimestamp (WithSeverity a) -> m ()
 printLogs severityThreshold handler message =
   when (severityThreshold >= msgSeverity (discardTimestamp message)) $
-    handler . renderWithTimestamp timeFormatter (renderWithSeverity pretty) $ message
+  handler . renderWithTimestamp timeFormatter (renderWithSeverity pretty) $ message
   where
     timeFormatter = formatTime defaultTimeLocale timeFormat
     timeFormat = iso8601DateFormat (Just "%H:%M:%S.%q")
