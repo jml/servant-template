@@ -5,6 +5,7 @@ IMAGE_NAME := {{ cookiecutter.project_name }}
 IMAGE_TAG := $(shell ./scripts/image-tag)
 EXE_NAME := {{ cookiecutter.project_name }}
 
+LOCAL_BINARY_PATH = $(shell stack path --local-install-root)
 LINUX_BINARY_PATH = $(shell stack --docker path --local-install-root)
 
 check:
@@ -30,3 +31,9 @@ image:
 		$(LINUX_BINARY_PATH)/bin/$(EXE_NAME) \
 		$(IMAGE_NAME) \
 		$(IMAGE_TAG)
+
+$(LOCAL_BINARY_PATH)/bin/$(EXE_NAME):
+	stack build
+
+bash_completion.sh: $(LOCAL_BINARY_PATH)/bin/$(EXE_NAME)
+	stack exec $(EXE_NAME) -- --bash-completion-script $(LOCAL_BINARY_PATH)/bin/$(EXE_NAME) > bash_completion.sh
