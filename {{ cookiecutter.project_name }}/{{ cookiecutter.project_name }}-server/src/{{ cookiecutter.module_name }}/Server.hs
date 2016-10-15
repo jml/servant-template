@@ -24,7 +24,7 @@ import Text.PrettyPrint.Leijen.Text (int, text)
 import {{ cookiecutter.module_name }}.API (API)
 import {{ cookiecutter.module_name }}.Server.Handlers (server)
 import {{ cookiecutter.module_name }}.Server.Instrument
-       (instrumentApp, requestDuration)
+       (defaultPrometheusSettings, prometheus, requestDuration)
 import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
 
 -- | Configuration for the application.
@@ -72,7 +72,7 @@ runApp config@Config {..} = do
   runSettings settings (middleware requests)
   where
     settings = warpSettings config
-    middleware r = logging . instrumentApp r "{{ cookiecutter.metric_namespace }}" $ app
+    middleware r = logging . prometheus defaultPrometheusSettings r "{{ cookiecutter.metric_namespace }}" $ app
     logging =
       case accessLogs of
         Disabled -> identity
