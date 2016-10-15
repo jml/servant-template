@@ -2,12 +2,16 @@
 
 IMAGE_NAME := {{ cookiecutter.project_name }}
 IMAGE_TAG := $(shell ./scripts/image-tag)
+EXE_NAME := {{ cookiecutter.project_name }}
+
+LINUX_BINARY_PATH = $(shell stack --docker path --local-install-root)
 
 check:
 	stack test --fast
 
 clean:
 	stack clean
+	stack --docker clean
 
 docs:
 	stack haddock
@@ -19,4 +23,8 @@ lint:
 	hlint -q .
 
 image:
-	./scripts/build-image "{{ cookiecutter.project_name }}" $(IMAGE_NAME) $(IMAGE_TAG)
+	stack --docker build
+	./scripts/build-image \
+		$(LINUX_BINARY_PATH)/bin/$(EXE_NAME) \
+		$(IMAGE_NAME) \
+		$(IMAGE_TAG)

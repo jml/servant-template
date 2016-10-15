@@ -22,7 +22,6 @@ set -o pipefail
 BUILD_IMAGE="fpco/stack-build:lts-7.2" # XXX: Make this a parameter?
 
 # Dependencies
-STACK=stack
 DOCKER=docker
 AWK=awk
 GREP=grep
@@ -30,19 +29,21 @@ CP=cp
 MKDIR=mkdir
 TAR=tar
 
-exe_name="${1}" # XXX: Change this to take the full binary path & infer exe name.
+# Path to a Linux binary that we're going to run in the container.
+binary_path="${1}"
+# The name of the image to make.
 image_name="${2}"
+# How to tag the image when we're done. We'll also make a 'latest' tag.
 image_tag="${3}"
 
-"${STACK}" --docker build
-bin_path=$("${STACK}" --docker exec which "${exe_name}")
+exe_name=$(basename "${binary_path}")
 
-# Run stack-build container so we can copy things into and out of it.
+# Run a container for the build image so we can copy things into and out of it.
 build_container=$("${DOCKER}" run -d "${BUILD_IMAGE}" tail -f /dev/null)
 trap '"${DOCKER}" stop "${build_container}" >/dev/null' EXIT
 
 # Copy the built binary to the build container so we can identify libraries
-"${DOCKER}" cp "${bin_path}" "${build_container}:/${exe_name}"
+"${DOCKER}" cp "${binary_path}" "${build_container}:/${exe_name}"
 
 # Identify linked libraries
 libraries=( $( "${DOCKER}" exec "${build_container}" ldd "/${exe_name}" | "${AWK}" '{print $(NF-1)}' | "${GREP}" -v '=>' ) )
@@ -52,7 +53,7 @@ libraries+=('/bin/sh')
 run_container_dir=$(mktemp -d 2>/dev/null || mktemp -d -t "${exe_name}")
 
 # Copy executable and all needed libraries into temporary directory.
-"${CP}" "${bin_path}" "${run_container_dir}/${exe_name}"
+"${CP}" "${binary_path}" "${run_container_dir}/${exe_name}"
 for lib in "${libraries[@]}"; do
     "${MKDIR}" -p "${run_container_dir}/$(dirname "$lib")"
     # Need -L to make sure we get actual libraries & binaries, not symlinks to
