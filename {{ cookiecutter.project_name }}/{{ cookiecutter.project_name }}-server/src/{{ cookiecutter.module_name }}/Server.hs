@@ -9,6 +9,7 @@ module {{ cookiecutter.module_name }}.Server
 import Protolude
 
 import Control.Monad.Log (Severity(..))
+import qualified Data.List as List
 import GHC.Stats (getGCStatsEnabled)
 import Network.Wai.Handler.Warp
        (Port, Settings, defaultSettings, runSettings, setBeforeMainLoop,
@@ -32,6 +33,7 @@ import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
 data Config = Config
   { port :: Port
   , accessLogs :: AccessLogs
+  , logLevel :: Severity
   , enableGhcMetrics :: Bool
   } deriving (Show)
 
@@ -56,7 +58,13 @@ options = info (helper <*> parser) description
         (eitherReader parseAccessLogs)
         (fold
            [long "access-logs", help "How to log HTTP access", value Disabled]) <*>
+      option
+        (eitherReader (maybe (throwError (toS invalidLogLevel)) pure . Log.fromKeyword . toS))
+        (fold
+           [long "log-level", help "Minimum severity for log messages", value Informational]) <*>
       switch (fold [long "ghc-metrics", help "Export GHC metrics. Requires running with +RTS."])
+    invalidLogLevel = "Log level must be one of: " <> allLogLevels
+    allLogLevels = fold . List.intersperse "," . map Log.toKeyword $ (enumFrom minBound)
     parseAccessLogs "none" = pure Disabled
     parseAccessLogs "basic" = pure Enabled
     parseAccessLogs "dev" = pure DevMode
@@ -74,7 +82,7 @@ runApp config@Config {..} = do
   when enableGhcMetrics $ do
     statsEnabled <- getGCStatsEnabled
     unless statsEnabled $
-      Log.withLogging $
+      Log.withLogging logLevel $
         Log.log Warning (text "Exporting GHC metrics but GC stats not enabled. Re-run with +RTS -T.")
     void $ Prom.register Prom.ghcMetrics
   runSettings settings (middleware requests)
@@ -86,13 +94,13 @@ runApp config@Config {..} = do
         Disabled -> identity
         Enabled -> RL.logStdout
         DevMode -> RL.logStdoutDev
-    app = serve (Proxy :: Proxy API) server
+    app = serve (Proxy :: Proxy API) (server logLevel)
 
 -- | Generate warp settings from config
 --
 -- Serve from a port and print out where we're serving from.
 warpSettings :: Config -> Settings
 warpSettings Config {..} =
-  setBeforeMainLoop (Log.withLogging printPort) (setPort port defaultSettings)
+  setBeforeMainLoop (Log.withLogging logLevel printPort) (setPort port defaultSettings)
   where
     printPort = Log.log Informational (text "Listening on :" `mappend` int port)

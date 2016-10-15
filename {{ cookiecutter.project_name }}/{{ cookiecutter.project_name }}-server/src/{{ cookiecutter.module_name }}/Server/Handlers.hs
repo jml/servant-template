@@ -19,8 +19,8 @@ import {{ cookiecutter.module_name }}.API (API, RootPage(..), User(..))
 import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
 
 -- | {{ cookiecutter.project_name }} API implementation.
-server :: Server API
-server = pure RootPage :<|> Log.withLogging users
+server :: Severity -> Server API
+server logLevel = pure RootPage :<|> Log.withLogging logLevel users
 
 -- | Example endpoint.
 users
