@@ -14,6 +14,7 @@ import Control.Monad.Log
         renderWithTimestamp, runLoggingT, timestamp)
 import Data.Time.Format
        (defaultTimeLocale, formatTime, iso8601DateFormat)
+import System.IO (hFlush)
 import Text.PrettyPrint.Leijen.Text (Pretty(..))
 
 type LogM msg m a = LoggingT (WithSeverity msg) (LoggingT (WithTimestamp (WithSeverity msg)) m) a
@@ -32,8 +33,9 @@ withTimestamps = mapLogMessageM timestamp
 printLogs
   :: (Pretty a, MonadIO m)
   => WithTimestamp (WithSeverity a) -> m ()
-printLogs =
-  print . renderWithTimestamp timeFormatter (renderWithSeverity pretty)
+printLogs logs = do
+  print . renderWithTimestamp timeFormatter (renderWithSeverity pretty) $ logs
+  liftIO $ hFlush stdout
   where
     timeFormatter = formatTime defaultTimeLocale timeFormat
     timeFormat = iso8601DateFormat (Just "%H:%M:%S.%q")
