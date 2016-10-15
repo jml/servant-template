@@ -9,13 +9,14 @@ module {{ cookiecutter.module_name }}.Server
 import Protolude
 
 import Control.Monad.Log (Severity(..))
+import GHC.Stats (getGCStatsEnabled)
 import Network.Wai.Handler.Warp
        (Port, Settings, defaultSettings, runSettings, setBeforeMainLoop,
         setPort)
 import qualified Network.Wai.Middleware.RequestLogger as RL
 import Options.Applicative
        (ParserInfo, auto, eitherReader, execParser, fullDesc, header,
-        help, helper, info, long, metavar, option, progDesc, value)
+        help, helper, info, long, metavar, option, progDesc, switch, value)
 import qualified Prometheus as Prom
 import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
@@ -31,6 +32,7 @@ import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
 data Config = Config
   { port :: Port
   , accessLogs :: AccessLogs
+  , enableGhcMetrics :: Bool
   } deriving (Show)
 
 -- | What level of access logs to show.
@@ -53,7 +55,8 @@ options = info (helper <*> parser) description
       option
         (eitherReader parseAccessLogs)
         (fold
-           [long "access-logs", help "How to log HTTP access", value Disabled])
+           [long "access-logs", help "How to log HTTP access", value Disabled]) <*>
+      switch (fold [long "ghc-metrics", help "Export GHC metrics. Requires running with +RTS."])
     parseAccessLogs "none" = pure Disabled
     parseAccessLogs "basic" = pure Enabled
     parseAccessLogs "dev" = pure DevMode
@@ -68,7 +71,12 @@ options = info (helper <*> parser) description
 runApp :: Config -> IO ()
 runApp config@Config {..} = do
   requests <- Prom.registerIO requestDuration
-  void $ Prom.register Prom.ghcMetrics
+  when enableGhcMetrics $ do
+    statsEnabled <- getGCStatsEnabled
+    unless statsEnabled $
+      Log.withLogging $
+        Log.log Warning (text "Exporting GHC metrics but GC stats not enabled. Re-run with +RTS -T.")
+    void $ Prom.register Prom.ghcMetrics
   runSettings settings (middleware requests)
   where
     settings = warpSettings config
