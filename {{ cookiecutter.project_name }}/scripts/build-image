@@ -14,13 +14,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# The name of the image where the binary was built. We use this image to look
-# up shared library dependencies with 'ldd', and we copy those libraries from
-# this image.
-#
-# Assumes the image has 'ldd' installed on the path.
-BUILD_IMAGE="fpco/stack-build:lts-7.2" # XXX: Make this a parameter?
-
 # Dependencies
 DOCKER=docker
 AWK=awk
@@ -29,17 +22,23 @@ CP=cp
 MKDIR=mkdir
 TAR=tar
 
+# The name of the image where the binary was built. We use this image to look
+# up shared library dependencies with 'ldd', and we copy those libraries from
+# this image.
+#
+# Assumes the image has 'ldd' installed on the path.
+build_image="${1}"
 # Path to a Linux binary that we're going to run in the container.
-binary_path="${1}"
+binary_path="${2}"
 # The name of the image to make.
-image_name="${2}"
+image_name="${3}"
 # How to tag the image when we're done. We'll also make a 'latest' tag.
-image_tag="${3}"
+image_tag="${4}"
 
 exe_name=$(basename "${binary_path}")
 
 # Run a container for the build image so we can copy things into and out of it.
-build_container=$("${DOCKER}" run -d "${BUILD_IMAGE}" tail -f /dev/null)
+build_container=$("${DOCKER}" run -d "${build_image}" tail -f /dev/null)
 trap '"${DOCKER}" stop "${build_container}" >/dev/null' EXIT
 
 # Copy the built binary to the build container so we can identify libraries

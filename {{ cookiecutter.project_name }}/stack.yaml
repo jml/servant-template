@@ -1,4 +1,4 @@
-resolver: lts-7.2
+resolver: {{ cookiecutter.stack_resolver }}
 
 packages:
   - {{ cookiecutter.project_name }}-api
