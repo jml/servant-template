@@ -1,0 +1,27 @@
+dependencies:
+  cache_directories:
+    - "~/.cabal"
+    - "~/.local"
+    - "~/.stack"
+    - ".stack-work"
+  pre:
+    - wget -q -O- https://s3.amazonaws.com/download.fpcomplete.com/ubuntu/fpco.key | sudo apt-key add -
+    - echo 'deb http://download.fpcomplete.com/ubuntu/trusty stable main'|sudo tee /etc/apt/sources.list.d/fpco.list
+    - sudo apt-get update
+    - sudo apt-get install -y stack
+    - sudo python -m ensurepip
+    - sudo python -m pip install --upgrade pip
+    - sudo pip install cookiecutter
+  override:
+    - stack --no-terminal setup
+    - stack --no-terminal build --test --only-dependencies -j1
+    - stack install hlint
+
+test:
+  override:
+    - cookiecutter --no-output -o .test-project .
+    # Default project is 'awesome-service'
+    - cd .test-project/awesome-service; git init; git add .; git ci -m "Initial commit"
+    - cd .test-project/awesome-service; stack --no-terminal test --fast
+    - cd .test-project/awesome-service; ./scripts/hindent-everything && git diff --exit-code
+    - cd .test-project/awesome-service; hlint .
