@@ -19,4 +19,4 @@ lint:
 	hlint -q .
 
 image:
-	./scripts/build-image "{{ cookiecutter.project_name }}" $(IMAGE_NAME):$(IMAGE_TAG)
+	./scripts/build-image "{{ cookiecutter.project_name }}" $(IMAGE_NAME) $(IMAGE_TAG)

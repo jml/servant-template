@@ -6,7 +6,7 @@
 # Build a minimal Docker image for our binary.
 #
 # Run with:
-#   build-image /path/to/binary image-name:image-tag
+#   build-image /path/to/binary image-name image-tag
 
 {% raw %}
 
@@ -32,6 +32,7 @@ TAR=tar
 
 exe_name="${1}" # XXX: Change this to take the full binary path & infer exe name.
 image_name="${2}"
+image_tag="${3}"
 
 "${STACK}" --docker build
 bin_path=$("${STACK}" --docker exec which "${exe_name}")
@@ -60,6 +61,7 @@ for lib in "${libraries[@]}"; do
 done
 
 "${TAR}" -C "${run_container_dir}" -c . | "${DOCKER}" import --change "ENTRYPOINT [\"/${exe_name}\"]" - "${image_name}"
-echo "${image_name}"
+"${DOCKER}" tag "${image_name}" "${image_name}:${image_tag}"
+echo "${image_name}:${image_tag}"
 
 {% endraw %}
