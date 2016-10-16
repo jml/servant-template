@@ -10,7 +10,7 @@ module {{ cookiecutter.module_name }}.Server.Handlers
 -- should be in a submodule of Project.Server. Perhaps the code in
 -- Project.Server (which is command-line processing, setting up logs &
 -- monitoring, starting the HTTP server) should be in a different module.
-import Protolude hiding (Handler)
+import Protolude
 
 import Control.Monad.Except (ExceptT(..))
 import Control.Monad.Log (Severity, logInfo)
