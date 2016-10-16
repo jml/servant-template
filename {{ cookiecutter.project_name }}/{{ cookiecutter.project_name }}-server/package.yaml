@@ -51,5 +51,10 @@ tests:
     main: Main.hs
     source-dirs: tests
     dependencies:
+      - {{ cookiecutter.project_name}}-api
       - {{ cookiecutter.project_name }}-server
+      - logging-effect
+      - QuickCheck
+      - servant-quickcheck
       - tasty
+      - tasty-hspec
