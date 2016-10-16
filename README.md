@@ -13,13 +13,21 @@ $ pip install --user cookiecutter
 $ cookiecutter gh:jml/servant-template
 ```
 
+Once the template is created, you can build things with `stack` or use the
+provided `Makefile`.
+
+Your application logic goes in the `YourApp.API` module and the
+`YourApp.Server.Handlers` module.
+
 ## Features
 
 Things you get with this template:
 
-* logging using [logging-effect](http://hackage.haskell.org/package/logging-effect)
+* Logging using [logging-effect](http://hackage.haskell.org/package/logging-effect)
 * Prometheus instrumentation using [prometheus-client](https://hackage.haskell.org/package/prometheus-client)
-* command-line parsing with [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
+* Command-line parsing with [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
+* Tests with [servant-quickcheck](http://hackage.haskell.org/package/servant-quickcheck)
+* Make target to build a Docker image tagged with the Git revision ID.
 
 ## Choices
 

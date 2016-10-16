@@ -9,7 +9,7 @@ module {{ cookiecutter.module_name }}.Server.Logging
   , toKeyword
   ) where
 
-import Protolude hiding (log)
+import Protolude hiding (Handler, log)
 
 import Control.Monad.Catch (MonadMask)
 import Control.Monad.Log
