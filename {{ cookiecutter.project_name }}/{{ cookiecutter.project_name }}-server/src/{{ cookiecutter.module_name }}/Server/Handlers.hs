@@ -10,7 +10,6 @@ module {{ cookiecutter.module_name }}.Server.Handlers
 -- should be in a submodule of Project.Server. Perhaps the code in
 -- Project.Server (which is command-line processing, setting up logs &
 -- monitoring, starting the HTTP server) should be in a different module.
-
 import Protolude hiding (Handler)
 
 import Control.Monad.Except (ExceptT(..))
@@ -34,10 +33,14 @@ type Handler msg = ExceptT ServantErr (Log.LogM msg IO)
 --
 -- See http://haskell-servant.readthedocs.io/en/stable/tutorial/Server.html#using-another-monad-for-your-handlers
 -- for the details.
-toHandler :: Pretty msg => Severity -> (Handler msg :~> ExceptT ServantErr IO)
+toHandler
+  :: Pretty msg
+  => Severity -> (Handler msg :~> ExceptT ServantErr IO)
 toHandler logLevel = Nat toHandler'
   where
-    toHandler' :: Pretty msg => Handler msg a -> ExceptT ServantErr IO a
+    toHandler'
+      :: Pretty msg
+      => Handler msg a -> ExceptT ServantErr IO a
     toHandler' = ExceptT . Log.withLogging logLevel . runExceptT
 
 -- | Example endpoint.
