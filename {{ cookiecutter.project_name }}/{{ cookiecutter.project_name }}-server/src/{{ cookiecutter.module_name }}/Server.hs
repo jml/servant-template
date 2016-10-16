@@ -3,7 +3,8 @@
 
 -- | Serve the API as an HTTP server.
 module {{ cookiecutter.module_name }}.Server
-  ( startApp
+  ( server
+  , startApp
   ) where
 
 import Protolude
@@ -23,7 +24,7 @@ import qualified Prometheus.Metric.GHC as Prom
 import Servant (serve)
 import Text.PrettyPrint.Leijen.Text (int, text)
 
-import {{ cookiecutter.module_name }}.API (API)
+import {{ cookiecutter.module_name }}.API (api)
 import {{ cookiecutter.module_name }}.Server.Handlers (server)
 import {{ cookiecutter.module_name }}.Server.Instrument
        (defaultPrometheusSettings, prometheus, requestDuration)
@@ -106,7 +107,7 @@ runApp config@Config {..} = do
         Disabled -> identity
         Enabled -> RL.logStdout
         DevMode -> RL.logStdoutDev
-    app = serve (Proxy :: Proxy API) (server logLevel)
+    app = serve api (server logLevel)
 
 -- | Generate warp settings from config
 --

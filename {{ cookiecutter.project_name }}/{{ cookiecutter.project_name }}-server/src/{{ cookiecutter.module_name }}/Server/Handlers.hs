@@ -17,7 +17,7 @@ import Control.Monad.Log (Severity, logInfo)
 import Servant (ServantErr, Server, (:<|>)(..), (:~>)(..), enter)
 import Text.PrettyPrint.Leijen.Text (Doc, Pretty, text)
 
-import {{ cookiecutter.module_name }}.API (API, RootPage(..), User(..))
+import {{ cookiecutter.module_name }}.API (API, RootPage(..), User(..), Users(..))
 import qualified {{ cookiecutter.module_name }}.Server.Logging as Log
 
 -- | {{ cookiecutter.project_name }} API implementation.
@@ -44,7 +44,7 @@ toHandler logLevel = Nat toHandler'
     toHandler' = ExceptT . Log.withLogging logLevel . runExceptT
 
 -- | Example endpoint.
-users :: Handler Doc [User]
+users :: Handler Doc Users
 users = do
   logInfo (text "Example of logging")
-  pure [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"]
+  pure (Users [User 1 "Isaac" "Newton", User 2 "Albert" "Einstein"])
