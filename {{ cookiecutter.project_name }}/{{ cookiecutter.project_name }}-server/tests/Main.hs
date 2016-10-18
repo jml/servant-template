@@ -12,8 +12,8 @@ import Servant.QuickCheck
 import Test.Tasty (defaultMain, TestTree, testGroup)
 import Test.Tasty.Hspec (Spec, it, testSpec)
 
-import AwesomeService.API (api)
-import AwesomeService.Server (server)
+import {{ cookiecutter.module_name }}.API (api)
+import {{ cookiecutter.module_name }}.Server (server)
 
 main :: IO ()
 main = defaultMain =<< tests
