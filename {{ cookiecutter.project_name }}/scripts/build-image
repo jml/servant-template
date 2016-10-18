@@ -39,7 +39,7 @@ exe_name=$(basename "${binary_path}")
 
 # Run a container for the build image so we can copy things into and out of it.
 build_container=$(docker run -d "${build_image}" tail -f /dev/null)
-trap 'docker stop "${build_container}" >/dev/null' EXIT
+trap 'docker stop "${build_container}" >/dev/null && docker rm "${build_container}"' EXIT
 
 # Copy the built binary to the build container so we can identify libraries
 docker cp "${binary_path}" "${build_container}:/${exe_name}"
@@ -60,7 +60,7 @@ for lib in "${libraries[@]}"; do
     docker cp -L "${build_container}:${lib}" "${run_container_dir}/${lib}"
 done
 
-tar -C "${run_container_dir}" -c . | docker import --change "ENTRYPOINT [\"/${exe_name}\"]" - "${image_name}"
+tar -C "${run_container_dir}" -c . | docker import --change "ENTRYPOINT "/${exe_name}"" - "${image_name}"
 docker tag "${image_name}" "${image_name}:${image_tag}"
 echo "${image_name}:${image_tag}"
 
