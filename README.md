@@ -16,8 +16,7 @@ $ cookiecutter gh:jml/servant-template
 Once the template is created, you can build things with `stack` or use the
 provided `Makefile`.
 
-Your application logic goes in the `YourApp.API` module and the
-`YourApp.Server.Handlers` module.
+Your API definition goes in the `YourApp.API` module and the application logic in the `YourApp.Server.Handlers` module.
 
 ## Features
 
